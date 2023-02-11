@@ -1,0 +1,26 @@
+/* 	     2 4 3 
+          +5 6 4  (from left to right)
+          -------
+           7 0 1 
+
+           ansLinkedList : -1 (dummyNode)
+
+
+           initially, power = 0
+
+
+           2 + 5 + (power = 0) => 7     ansLL : -1 -> 7
+           now power is 0
+
+
+           6 + 4 + (power = 0) => 10     ansLL : -1 -> 7 -> 0
+           now power is 1 
+
+
+           4 + 3 + (power = 1) => 8          ansLL : -1 -> 7 -> 0 -> 8
+           now power is 0                (8)node
+
+
+           final linked list : 7 -> 0 -> 8 ☑️
+
+*/
