@@ -2,6 +2,7 @@
 // Solved(✔️) - Schedule courses - 1 approach 
 
 // ☑️solved at leetcode : https://leetcode.com/problems/course-schedule/description/
+// ☑️solved at gfg : https://practice.geeksforgeeks.org/problems/prerequisite-tasks/1
 
 /* ⭐✔️Approach - 1 (using loop detection technique using DFS)
         
