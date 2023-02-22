@@ -1,9 +1,9 @@
 // Solved (✔️) - Min Valid Capacity of ship to deliver all weights - 1 approach 
 
 // ☑️leetcode link : https://leetcode.com/problems/capacity-to-ship-packages-within-d-days/description/
+
 // QOTD 22 Feb 23
 
-// ----------------------------------------------------------------------------------------
 /* Approach - 1 (binary search)
     
          ✅T : O(NlogN) 
@@ -11,7 +11,6 @@
 */
 
 // code 
-/*
 class Solution {
     
 
@@ -78,4 +77,3 @@ public:
     }
 };
 
-*/
