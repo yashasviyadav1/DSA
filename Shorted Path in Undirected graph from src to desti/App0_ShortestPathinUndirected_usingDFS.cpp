@@ -16,7 +16,7 @@ using namespace std;
 */
 
 // code 
-/*
+
 // fun.2 
 void createAdjList(vector<pair<int,int>> &edges, unordered_map<int,list<int>> &AdjList){
 
@@ -76,4 +76,3 @@ vector<int> shortestPath( vector<pair<int,int>> edges , int n , int m, int src ,
 
 }
 
-*/
