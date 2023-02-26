@@ -1,2 +1,2 @@
 # Codes 
-here i will post all the questions of data structures and algorithms that i have done more than ones. 
+here i will post all the questions with codes, of data structures and algorithms that i do in my daily life.
