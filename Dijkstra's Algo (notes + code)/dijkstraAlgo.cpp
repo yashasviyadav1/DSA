@@ -3,9 +3,7 @@
 // ☑️solved at codeStudio : https://www.codingninjas.com/codestudio/problems/dijkstra-s-shortest-path_920469?leftPanelTab=0
 
 //-----------------------------------------------------------------------------------
-/*[✔️⭐⭐[App-1.1] more faster then prv App-1]
-    
-    Title = Dijkstra's Algo Using Set<pair(minDis to reach node ,node) >  
+/*[✔️⭐⭐[App-1.1] Dijkstra's Algo Using Set<pair(minDis to reach node ,node) >  
 
     explanation :- what we do here is we use a set(minDis to reach node,node) and using this every time we pop the front 
                     of this set, we will get the pair with least 'minDis'.
