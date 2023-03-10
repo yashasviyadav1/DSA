@@ -1,4 +1,4 @@
-// solved at gfg : https://practice.geeksforgeeks.org/problems/minimum-spanning-tree/1?utm_source=youtube&utm_medium=collab_striver_ytdescription&utm_campaign=minimum-spanning-tree
+// ☑️solved at gfg : https://practice.geeksforgeeks.org/problems/minimum-spanning-tree/1?utm_source=youtube&utm_medium=collab_striver_ytdescription&utm_campaign=minimum-spanning-tree
 
 /* ✔️⭐App-1 (Prim's Algo)
 
@@ -13,7 +13,6 @@
 
 */
 
-/* 
 
 class Solution
 {
@@ -97,5 +96,5 @@ class Solution
         
     }
 };
-*/
+
 //--------------------------------------------------------------------------------
