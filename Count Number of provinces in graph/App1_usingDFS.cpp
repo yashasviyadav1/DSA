@@ -14,7 +14,6 @@
 
 */
 
-/*
 class Solution {
 
 private:
@@ -72,4 +71,4 @@ public:
         return provinces;
     }
 };
-*/
+
