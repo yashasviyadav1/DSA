@@ -58,8 +58,6 @@ public:
             int leastQuietNode = i; // initially 
             DFS(AdjList, visited, quiet, leastQuietNode, i);
             ans.push_back(leastQuietNode);
-            cout << "working : ";
-            cout << "least quiet node : " << leastQuietNode << endl;
         }
 
         return ans;
