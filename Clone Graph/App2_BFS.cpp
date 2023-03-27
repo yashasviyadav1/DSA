@@ -1,6 +1,92 @@
 // Solved(☑️) - Clone Graph 
 // leetcode link : https://leetcode.com/problems/clone-graph/description/
 
+/* ✔️⭐Approach - 2.2 (using BFS + map(Node*,Node*) orgNodeToCloneNode mapper) - improved version of app-2
+         
+         explanation :-
+              we will apply BFS on the original graph, and build the Clonned graph during this traversal side by side, also we will keep a 'visited' map (to take care of cyclic graphs), also we will be maintaining a 'orgNodeToCloneNode' map to map the original node to the address of clonned nodes corresponding to them, means that when we create a node in clonned graph lets say (1) so we will store its address into this map as value and key as 'original node' , we will first check that if any node is present in our clonned graph with corresponding to 'original node' then use the prv node itself, but if node is not present then create a new node and use that (also store its address into map for key=originalNode). 
+
+        \U0001f50dIMP Note : the prv BFS(app-2) where we mapped 'val' to 'node' will fail in the case where graph has multiple nodes with same values., but if we map 'orgNode' to 'cloneNode' we will not have that issue at all
+
+        ✅ T : O(V+E) 
+        ✅ S : O(V+E) - visited map, clonedValToNodeAddress map 
+   
+*/
+class Solution {
+
+
+private:
+    // fun.2 : 
+    void cloneUsingBFS(Node* src, unordered_map<Node*,bool> &visited, unordered_map<Node*,Node*> &orgNodeToCloneNode){
+
+        // for BFS we need queue 
+        queue<Node*> q;
+        q.push(src);
+        visited[src] = true;
+
+        while(!q.empty()){
+
+            // fetch the org graphs front, and pop it 
+            Node* front = q.front();
+            q.pop();
+            
+            vector<Node*> frontNeighbours = front -> neighbors;
+
+            // if there is already a clonned node corresponding to 'front' in clonned graph, then use it, else create a new Clone of front and store it in map 
+            Node* frontClone;
+            if(orgNodeToCloneNode.find(front) != orgNodeToCloneNode.end()) // already present 
+                frontClone = (orgNodeToCloneNode.find(front)) -> second; // .find() returns key-val block's address, so to fetch its value use -> second
+            else{  // not present - create new one 
+                frontClone = new Node(front -> val);
+                orgNodeToCloneNode[front] = frontClone; 
+            }
+
+            for(Node* neigh:frontNeighbours){ // explore neighbours of original 'front'
+
+                // if neighClone is present, then use it else create new 'neighClone' and store in map
+                Node* neighClone;
+                if(orgNodeToCloneNode.find(neigh) != orgNodeToCloneNode.end()) // already present 
+                    neighClone = (orgNodeToCloneNode.find(neigh)) -> second;
+
+                else{ // not present - create new node
+                    neighClone = new Node(neigh -> val);
+                    orgNodeToCloneNode[neigh] = neighClone;
+                }
+
+                // connect (or insert) 'neighClone' into adjacency(neighbours) list of cloneFront
+                (frontClone -> neighbors).push_back(neighClone);
+
+                // if the 'neigh' node is unvisited, visit it and push it into q
+                if(!visited[neigh]){
+                    visited[neigh] = true;
+                    q.push(neigh);
+                }
+            } 
+        }
+
+    }
+
+public:
+    // main func
+    Node* cloneGraph(Node* node) {
+        
+        if(!node) return node;
+ 
+        // step 1 : we need to map 'original node' of nodes to their 'clonned node' (using map), we also need a visited map, 
+        unordered_map<Node*,Node*> orgNodeToCloneNode;
+        unordered_map<Node*,bool> visited;
+
+        Node* clonnedGraphStartNode = new Node(node -> val);// since we need to return the node with val 1
+        orgNodeToCloneNode[node] = clonnedGraphStartNode; 
+
+        // lets create clone graph from original graph's 'node' using BFS 
+        cloneUsingBFS(node, visited, orgNodeToCloneNode);
+
+        return clonnedGraphStartNode;
+    }
+};
+
+//--------------------------------------------------------------------------------------------------------------------------------------------
 /* ✔️⭐Approach - 2 (using BFS)
          
          explanation :-
@@ -10,7 +96,7 @@
         ✅ S : O(V+E) - visited map, clonedValToNodeAddress map 
 */
 
-
+/*
 // code
 class Solution {
     
@@ -85,4 +171,4 @@ public:
         return clonnedGraphStartNode;
     }
 };
-
+*/
