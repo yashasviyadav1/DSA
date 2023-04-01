@@ -25,7 +25,7 @@
     ✅ S : O(n*m) - for visited matrix 
 */
 
-/*
+
 class Solution {
 private:
     // fun.3 
@@ -93,4 +93,3 @@ public:
         return islandsCount;
     }
 };
-*/
