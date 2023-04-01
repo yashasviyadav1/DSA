@@ -9,7 +9,7 @@
     ✅ S : O(n*m) - for visited matrix 
 */
 
-/*
+
 class Solution {
 private:
     // fun.3 : returns true if a cell (row,col) is valid neigh , else return false 
@@ -96,4 +96,3 @@ public:
     }
 };
 
-*/
