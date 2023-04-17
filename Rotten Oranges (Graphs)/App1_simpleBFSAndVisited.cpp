@@ -13,7 +13,6 @@
 
 */
 
-/* 
 // code - 
 class Solution {
     
@@ -116,5 +115,3 @@ public:
         
     }
 };
-
-*/
