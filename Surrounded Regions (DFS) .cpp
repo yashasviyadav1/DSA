@@ -1,4 +1,7 @@
-//☑️solved at leetcode : https://leetcode.com/problems/surrounded-regions/description/
+// (Solved)✔️ - Surrounded Regions - 1 Approach (DFS)
+
+// ☑️solved at leetcode : https://leetcode.com/problems/surrounded-regions/description/
+// ☑️solved at gfg : https://practice.geeksforgeeks.org/problems/replace-os-with-xs0052/1?utm_source=gfg&utm_medium=article&utm_campaign=bottom_sticky_on_article
 
 class Solution {
     /* ✔️⭐App-1 (DFS)
