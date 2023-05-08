@@ -1,5 +1,6 @@
 ### Solved this on gfg : [link](https://practice.geeksforgeeks.org/problems/number-of-distinct-islands/1)
 
+#### Approach - 1 (DFS + storing path of each island)
 ```
  ⭐✔️Approach - 1 (DFS + pathMaintain + Visited)
     
@@ -123,6 +124,117 @@ class Solution {
         // }
         
         return distinctIslands;
+    }
+};
+
+```
+
+#### Approach - 2 (DFS + storing shapes of each island explored)
+```cpp
+
+#include<set>
+class Solution {
+    
+    /* ⭐✔️Approach -2 (DFS + storing shapes + Visited)
+    
+        1 1          1 1 
+        1     <==>   1    (identical)
+        1            1    
+        
+        1 1          1 1    (not identical, as 2nd one is the reflection, or rotated version of 1st one so, not identical)
+        1     !=       1 
+        1              1  
+    
+        explanation :- From above img, all we need to check is the curr island that we visited is identical to any prv islands previously visited or not,
+                       for that we somehow need to store the prv islands shape in a data structure (set), and to do that we have 2 logics 
+                            1) either store the moves of exploring and comming back from the island 
+                                OR
+    (Alternative Approach)  2) take the starting cell of each DFS as the base and store all the other islands coordinates by subtracting them from the base
+                            as described in the vid by striver : (https://youtu.be/7zmgQSJghpo)
+                            
+                       lets follow the 2nd approach and that we have to just make sure tostore shapes of each of the islands that we explore, and out of them then we can find the distinct ones
+                        
+          An imp edge case - 
+            
+            3 5              Correct Output :- 2 
+            1 1 0 1 1         
+            1 0 0 0 1       
+            1 0 0 0 1       
+        
+        
+       
+        ✅Time : - O(n*m) - DFS
+        ✅Space : O(n*m) - visited, set
+        
+        note : we ca
+        
+    */
+    
+  private:
+    bool isSafeToMove(vector<vector<int>> &grid, vector<vector<bool>> &visited, int row, int col){ // check if the new cell is in range of the grid or not
+        
+        int rowSize = grid.size();
+        int colSize = grid[0].size();
+        
+        if( (row >= 0 && row < rowSize) && (col >= 0 && col < colSize) && (grid[row][col] == 1) && !visited[row][col])
+            return true;
+        return false;
+        
+    }
+    
+    void DFS(vector<vector<int>> &grid, vector<vector<bool>> &visited, vector<pair<int,int>> &currIslandShape, int baseRow, int baseCol, int row, int col){
+        
+        // whenever we reach a cell, make sure to sub it with the base cell and find the shape, and store it into 'currIslandShape'
+        currIslandShape.push_back({row-baseRow, col-baseCol});
+        visited[row][col] = true;
+         
+        // l, r, u, d
+        vector<int> deltaRow = {0, 0, -1, +1};
+        vector<int> deltaCol = {-1, +1, 0, 0};
+        
+        for(int i=0; i < 4; i++){
+            
+            int newRow = row + deltaRow[i];
+            int newCol = col + deltaCol[i];
+            
+            // it is safe to move if the next cell is in range,  is a '1' cell (land), is not visited
+            if(isSafeToMove(grid, visited, newRow, newCol)) // if a neigh cell is not yet visited, then explore it 
+                DFS(grid, visited, currIslandShape, baseRow, baseCol, newRow, newCol);
+        }
+    }
+    
+  public:
+    // main fun
+    int countDistinctIslands(vector<vector<int>>& grid) {
+        
+        int rowSize = grid.size();
+        int colSize = grid[0].size();
+        
+        // we need to maintain the visited cells, also we need to maintain the patter of path followed for each island
+        vector<vector<bool>> visited(rowSize, vector<bool>(colSize, false));
+        //unordered_set< vector<pair<int,int>> > exploredShapes; // stores the shapes of islands that have already been explored
+        set<vector<pair<int,int>>> exploredShapes;
+        
+        // apply DFS for all the unvisited land cells of the grid
+        for(int row=0; row < rowSize; row++){
+            for(int col=0; col < colSize; col++){
+                
+                if(!visited[row][col] && grid[row][col] == 1){ 
+                    
+                    int baseRow = row;
+                    int baseCol = col;
+                    
+                    vector<pair<int,int>> currIslandShape;
+                    DFS(grid, visited, currIslandShape, baseRow, baseCol, row, col); 
+                    
+                    // ones an island is explored, just push its shape into the unorderedSet 'exploredShapes', ( there is no need to check if the curr shape is already present or not because a set never stores duplicates)
+                    exploredShapes.insert(currIslandShape);
+                }
+            }
+            
+        }
+        
+        return exploredShapes.size();
     }
 };
 
