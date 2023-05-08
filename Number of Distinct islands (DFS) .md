@@ -37,6 +37,8 @@
         
     
 ```
+![App-1](https://user-images.githubusercontent.com/124666305/236748735-ae4e980b-d70e-449d-8004-48192a49b7b5.jpg)
+
 ### Code in C++ :- 
 ```cpp
 
@@ -128,14 +130,11 @@ class Solution {
 };
 
 ```
+----------------------------------------------------------------------------------------------------------------
 
 #### Approach - 2 (DFS + storing shapes of each island explored)
-```cpp
 
-#include<set>
-class Solution {
-    
-    /* ⭐✔️Approach -2 (DFS + storing shapes + Visited)
+```⭐✔️Approach -2 (DFS + storing shapes + Visited)
     
         1 1          1 1 
         1     <==>   1    (identical)
@@ -166,9 +165,17 @@ class Solution {
         ✅Time : - O(n*m) - DFS
         ✅Space : O(n*m) - visited, set
         
-        note : we ca
-        
-    */
+           note : just like we can not store <pair> and vecto<pair> as teh key of un_map, but can do it with map
+                  similarly for 'un_set' and 'set'
+    
+  
+```
+![App-2](https://user-images.githubusercontent.com/124666305/236749046-3f7a557c-b92b-40fc-8d4b-d1cb5f44ba5a.jpg)
+
+```cpp
+
+#include<set>
+class Solution {
     
   private:
     bool isSafeToMove(vector<vector<int>> &grid, vector<vector<bool>> &visited, int row, int col){ // check if the new cell is in range of the grid or not
