@@ -6,7 +6,13 @@
          explanation :-
               we will apply BFS on the original graph, and build the Clonned graph during this traversal side by side, also we will keep a 'visited' map (to take care of cyclic graphs), also we will be maintaining a 'orgNodeToCloneNode' map to map the original node to the address of clonned nodes corresponding to them, means that when we create a node in clonned graph lets say (1) so we will store its address into this map as value and key as 'original node' , we will first check that if any node is present in our clonned graph with corresponding to 'original node' then use the prv node itself, but if node is not present then create a new node and use that (also store its address into map for key=originalNode). 
 
-        \U0001f50dIMP Note : the prv BFS(app-2) where we mapped 'val' to 'node' will fail in the case where graph has multiple nodes with same values., but if we map 'orgNode' to 'cloneNode' we will not have that issue at all
+       \U0001f50d IMP Note : the prv BFS(app-2) where we mapped 'val' to 'node' will fail in the case where graph has multiple nodes with same values., but if we map 'orgNode' to 'cloneNode' we will not have that issue at all
+
+       \U0001f50d imp note : 
+            -> why we need 'orgToCopyNode' map ? 
+                    because we do not want to create multiple copies of the same node 
+            -> whu we need 'visited' map ? 
+                    because what we are dooing here is that we take a org node, create copu of it and attach all the neigh of org node to the corresponding copies of the copy node, now ones a front node is done, we do not want to access it again, so thats why we need a visited node, i.e each org node should enter into the q only ones.
 
         ✅ T : O(V+E) 
         ✅ S : O(V+E) - visited map, clonedValToNodeAddress map 
