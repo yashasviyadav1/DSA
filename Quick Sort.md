@@ -25,6 +25,9 @@ explanation :-   Quick Sort Function
 
 
 ```
+### Dry Run 
+![Quick Sort ](https://github.com/yashasviyadav1/DSA-Questions/assets/124666305/250d33a1-ec0e-43fe-8425-fdf8462396b2)
+
 ```java
 
 // J A V A
