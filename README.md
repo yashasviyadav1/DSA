@@ -1,2 +1,4 @@
-### Repo Link : https://github.com/yashasviyadav1/DSA-Questions
-#### These are my Solution/explanation to some of data structure questions.
+
+These are my Solution/explanation to some of data structure questions picked from Leetcode, GFG, CodeStudio.
+
+- Some of these ques are from Leetcode 150 list : https://leetcode.com/studyplan/top-interview-150/
