@@ -1,5 +1,7 @@
 // ⭐HEAP SORT IMPLEMENTATION - using max heap (for sorting array in asc order)
 
+// practice at : https://www.geeksforgeeks.org/problems/heap-sort/1
+
 /* ⭐✔️Approach - 1  (using heapify and heapSort functions) - JAVA
     
         explanation :- 
