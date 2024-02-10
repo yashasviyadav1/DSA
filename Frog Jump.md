@@ -1,7 +1,41 @@
 # Frog Jump (DP) 
 #### solved at : [CodeStudio](https://www.codingninjas.com/studio/problems/frog-jump_3621012?utm_source=striver&utm_medium=website&utm_campaign=a_zcoursetuf)
 
-##✔️⭐ Approach - 3 (recursive bruteforce + dp)
+
+## ✔️⭐ Approach - 3 (recursive bruteforce + dp)
+
+java code :- 
+```java
+import java.util.* ;
+import java.io.*; 
+public class Solution {
+
+    private static int minEnergyReq(int n, int[] dp, int[] heights){
+        if(n == 0) return 0; // to reach index 0 there is no energy consume
+        if(dp[n] != -1) return dp[n];
+
+        // to reach nth stair
+        int energyConsume1 = minEnergyReq(n-1, dp, heights) + Math.abs(heights[n] - heights[n-1]);
+        
+        int energyConsume2 = Integer.MAX_VALUE;
+        if(n > 1) // do not take 2nd jump from index < 2
+            energyConsume2 = minEnergyReq(n-2, dp, heights) + Math.abs(heights[n] - heights[n-2]);
+
+        // choose the way which will consume less energy
+        return dp[n] = Math.min(energyConsume1, energyConsume2);
+
+    }
+    public static int frogJump(int n, int heights[]) {
+        // there are n steps and we need to reach n-1 so find ans for n-1 so we need dp of size n
+        int[] dp = new int[n];
+        Arrays.fill(dp, -1);
+        
+        return minEnergyReq(n-1, dp, heights); 
+    }
+
+}
+```
+C++ code :- 
 ```cpp
 #include <bits/stdc++.h> 
 using namespace std;
