@@ -1,7 +1,48 @@
 # Frog Jump (DP) 
 #### solved at : [CodeStudio](https://www.codingninjas.com/studio/problems/frog-jump_3621012?utm_source=striver&utm_medium=website&utm_campaign=a_zcoursetuf)
 
+## Approach - 4.1 (Tabulation + space optimisation)
+```java
+import java.util.* ;
+import java.io.*; 
+public class Solution {
 
+/*
+    Approach - 4.1 (Tabulation + Space Optimization)
+    T : O(n)
+    S : O(1)  
+*/
+    private static int minEnergyReqTab(int[] heights, int n){
+
+        int prev2 = 0; // base 
+        int prev1 = 0;  // these are indices 
+
+        // now dp will be executed for 1,2,3...n
+        for(int index = 1; index < n; index++){
+            
+            int energyConsume1 = prev1 + Math.abs(heights[index] - heights[index-1]);
+            int energyConsume2 = Integer.MAX_VALUE;
+            
+            if(index > 1) // do not take 2nd jump from index < 2
+                energyConsume2 = prev2 + Math.abs(heights[index] - heights[index - 2]);
+
+            int curr = Math.min(energyConsume1, energyConsume2);
+            prev2 = prev1;
+            prev1 = curr;
+        }
+
+        // we need to find min total energy req for (n-1)th step
+        return prev1;
+    }
+
+
+    public static int frogJump(int n, int heights[]) {
+
+        return minEnergyReqTab(heights, n);
+    }
+
+}
+```
 ## Approach - 4 (Tabulation or bottom up dp)
 ```java
 import java.util.* ;
