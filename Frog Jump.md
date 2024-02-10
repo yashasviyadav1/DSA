@@ -2,6 +2,47 @@
 #### solved at : [CodeStudio](https://www.codingninjas.com/studio/problems/frog-jump_3621012?utm_source=striver&utm_medium=website&utm_campaign=a_zcoursetuf)
 
 
+## Approach - 4 (Tabulation or bottom up dp)
+```java
+import java.util.* ;
+import java.io.*; 
+public class Solution {
+
+/*
+    Approach - 4 (Tabulation or Bottom up approach)
+    T : O(n)
+    S : O(n) - only dp space
+*/
+    private static int minEnergyReqTab(int[] heights, int n){
+
+        int[] dp = new int[n];
+        Arrays.fill(dp, -1);
+        dp[0] = 0; // base 
+
+        // now dp will be executed for 1,2,3...n
+        for(int index = 1; index < n; index++){
+            
+            int energyConsume1 = dp[index-1] + Math.abs(heights[index] - heights[index-1]);
+            int energyConsume2 = Integer.MAX_VALUE;
+            if(index > 1) // do not take 2nd jump from index < 2
+                energyConsume2 = dp[index - 2] + Math.abs(heights[index] - heights[index - 2]);
+
+            dp[index] = Math.min(energyConsume1, energyConsume2);
+        }
+
+        // we need to find min total energy req for (n-1)th step
+        return dp[n - 1];
+    }
+
+
+    public static int frogJump(int n, int heights[]) {
+        
+        return minEnergyReqTab(heights, n);
+    }
+
+}
+
+```
 ## ✔️⭐ Approach - 3 (recursive bruteforce + dp)
 
 java code :- 
