@@ -2,6 +2,50 @@
 
 #### Solved at : [CodeStudio](https://www.codingninjas.com/studio/problems/subset-sum-equal-to-k_1550954/)
 
+## ✔️⭐Approach- 4 (tabulation with space optimization)
+```java
+import java.util.* ;
+import java.io.*; 
+
+public class Solution {
+    // Approach - 4
+    // space optimization Approach 
+    // T : O(n)
+    // S : O(2*cols) 
+
+    public static boolean subsetSumToK(int n, int k, int arr[]){
+        
+        // converting tabulation into space optimization
+        boolean[] prev = new boolean[k+1]; // 0th row 
+        for(int index = 0; index < n; index++) // base case 1
+            prev[0] = true;
+
+        if(k >= arr[0]) // consider k = 5, arr[0] = 50 and we access arr[0][50] out of bound will be thrown
+            prev[arr[0]] = true; // base case 2 
+    
+        // since ans for row 0 is in prev so start from row 1
+        for(int index=1; index < n; index++){ 
+            boolean[] curr = new boolean[k+1];
+            curr[0] = true;// base case 1 - all target 0 cells are true always 
+            for(int target=1; target <= k; target++){ // all target 0 cells are always 1 acc to base 1 so start frm target 1
+
+                boolean notPick = prev[target];  
+                boolean pick = false; 
+                if(target >= arr[index])
+                    pick = prev[target-arr[index]];
+
+                // if any of the calls have ans true means we found a subset with sum k 
+                curr[target] = pick || notPick;
+            }
+            prev = curr; // shifting
+        }
+            
+        return prev[k];
+    }
+}
+
+```
+
 ## ✔️⭐Approach - 3 (bottom up dp - tabulation)
 ```java
 import java.util.* ;
