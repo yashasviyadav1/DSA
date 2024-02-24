@@ -2,10 +2,103 @@
 
 #### Solved at : [CodeStudio](https://www.codingninjas.com/studio/problems/0-1-knapsack_920542)
 
-## ✔️Approach - 2 (Top down dp - memoization)
+## ✔️ Approach - 4 (Space Optimization to 2 1d ararys)
 ```java
 import java.util.* ;
 import java.io.*; 
+
+public class Solution{
+
+    // Approach - 3.1 (space optimization to 2 1d arrays) 
+    // T : O(n*knapSackLimit) 
+    // S : O(n*knapSackLimit) -> only dp
+
+
+    static int knapsack(int[] weight, int[] value, int n, int knapsackWeightLimit) {
+  
+        //  Tabulation to space optimization to 2 1d arrays
+        int[] prev = new int[knapsackWeightLimit+1]; // for 0th index (initially ) 
+
+        for(int remWeightLimit=weight[0]; remWeightLimit <= knapsackWeightLimit; remWeightLimit++){
+            prev[remWeightLimit] = value[0]; // base case 1
+        }
+       
+        // step 3 : we have ans for index 0 , lets find for remaining
+        for(int index=1; index < n; index++){
+
+            int[] curr = new int[knapsackWeightLimit+1]; // for 1st index initially 
+
+            for(int remWeightLimit=0; remWeightLimit <= knapsackWeightLimit; remWeightLimit++){
+   
+                int pick = 0; 
+                if(weight[index] <= remWeightLimit){
+                    pick = value[index] + prev[remWeightLimit - weight[index]];
+                }
+                int notPick = prev[remWeightLimit];
+
+                // we find maxValuePicked after picking the current weight and not picking as well, now whichever gives us max value we choose that
+                curr[remWeightLimit] = Math.max(pick, notPick);
+            }
+            prev = curr;
+        }
+
+        return prev[knapsackWeightLimit];
+
+    }
+}
+```
+
+## ✔️Approach - 3 (Top down dp - memoization)
+```java
+import java.util.* ;
+import java.io.*; 
+
+public class Solution{
+
+    // Approach - 2 (tabulation) 
+    // bottom up dp
+    // T : O(n*knapSackLimit) 
+    // S : O(n*knapSackLimit) -> only dp
+
+
+    static int knapsack(int[] weight, int[] value, int n, int knapsackWeightLimit) {
+ 
+        // memoization to tabulation
+        // step1 : dp
+        // dp[index][remainingWeightLimit]   stores the max possible value that can be robbed till from 0 to index with remWeightLimit
+        // remainning weight limit can be from 0 to knapsackWeightLimit     
+        int[][] dp = new int[n][knapsackWeightLimit + 1]; // +1 coz if limit is 10 then totalweightpicked can be 10 as well
+    
+        // if we have only 1 cell then we can pick that only if its weight is less then knapsack limit
+        // current cell's weight is 2 then we can pick it if remWeights is from 2 to limit  
+        for(int remWeightLimit=weight[0]; remWeightLimit <= knapsackWeightLimit; remWeightLimit++){
+            dp[0][remWeightLimit] = value[0]; // base case 1
+        }
+       
+        // step 3 : we have ans for index 0 , lets find for remaining
+        for(int index=1; index < n; index++){
+            for(int remWeightLimit=0; remWeightLimit <= knapsackWeightLimit; remWeightLimit++){
+                // pick the current weight only if that will not exceed the limit 
+                // i.e the current weight shoudld not be more then the remWeightLimit
+                int pick = 0; 
+                if(weight[index] <= remWeightLimit){
+                    pick = value[index] + dp[index-1][remWeightLimit - weight[index]];
+                }
+                int notPick = dp[index-1][remWeightLimit];
+
+                // we find maxValuePicked after picking the current weight and not picking as well, now whichever gives us max value we choose that
+                dp[index][remWeightLimit] = Math.max(pick, notPick);
+            }
+        }
+
+        return dp[n-1][knapsackWeightLimit];
+
+    }
+}
+```
+
+## ✔️Approach - 2 (bottom up dp - memoization)
+```java
 
 public class Solution{
 
@@ -13,63 +106,76 @@ public class Solution{
     // top down dp
     // T : O(n*knapSackLimit) 
     // S : O(n*knapSackLimit) -> rec stack + dp
-    private static int solve(int[] weight, int[] value, int knapsackWeightLimit, int[][] dp, int index, int totalWeightPicked){
-        if(index < 0) // no weight exists so cant pick any value
-            return 0;
-        if(dp[index][totalWeightPicked] != -1) return dp[index][totalWeightPicked];
-        
-        // if current weight is picked and will not exceed the knapsack weight limit than only pick the current weight
-        int pick = 0; // stores the total value that robber can pick after chooseign the curr weight as well
-        if(totalWeightPicked + weight[index] <= knapsackWeightLimit){
-            pick = value[index] + solve(weight, value, knapsackWeightLimit, dp, index-1, totalWeightPicked + weight[index]);
+    private static int solve(int[] weight, int[] value, int[][] dp, int index, int remWeightLimit){
+        if(index == 0){ // reached last element, and if this weights is <= remLimimit then only we can have its value
+            if(weight[0] <= remWeightLimit)
+                return value[0];
+            return 0; 
         }
-        
-        int notPick = solve(weight, value, knapsackWeightLimit, dp, index-1, totalWeightPicked);
+        if(dp[index][remWeightLimit] != -1) return dp[index][remWeightLimit];  
 
-        return dp[index][totalWeightPicked] = Math.max(pick, notPick);
-    }
+        // pick the current weight only if that will not exceed the limit 
+        // i.e the current weight shoudld not be more then the remWeightLimit
+        int pick = 0; 
+        if(weight[index] <= remWeightLimit){
+            pick = value[index] + solve(weight, value, dp, index-1, remWeightLimit - weight[index]);
+        }
+        int notPick = solve(weight, value, dp, index-1, remWeightLimit);
+
+        // we find maxValuePicked after picking the current weight and not picking as well, now whichever gives us max value we choose that
+        return dp[index][remWeightLimit] = Math.max(pick, notPick);
+    }   
 
     static int knapsack(int[] weight, int[] value, int n, int knapsackWeightLimit) {
 
         int index = n-1, totalWeightPicked = 0; 
-        
-        // we can not pick weight more than the knapsack limit so totalweightpicked goes form 0 to totalSum 
-        // dp[index][totalWeightPicked]  
+
+        // dp[index][remainingWeightLimit]   
+        // remainning weight limit can be from 0 to knapsackWeightLimit     
         int[][] dp = new int[n][knapsackWeightLimit + 1]; // +1 coz if limit is 10 then totalweightpicked can be 10 as well
         for(int[] row:dp) Arrays.fill(row, -1);
          
-        return solve(weight, value, knapsackWeightLimit, dp, index, totalWeightPicked); // this would return the max total value picked by robber in his knapsack
+        return solve(weight, value, dp, index, knapsackWeightLimit); // this would return the max total value picked by robber in his knapsack
+
 
     }
 }
 ```
 
 ## ⚠️[TLE] Approach - 1 (bruteforce pick and not pick)
-
 ```java
-import java.util.* ;
-import java.io.*; 
 
 public class Solution{
-    private static int solve(int[] weight, int[] value, int knapsackWeightLimit, int index, int totalWeightPicked){
-        if(index < 0) // no weight exists so cant pick any value
-            return 0;
-        
-        // if current weight is picked and will not exceed the knapsack weight limit than only pick the current weight
-        int pick = 0; // stores the total value that robber can pick after chooseign the curr weight as well
-        if(totalWeightPicked + weight[index] <= knapsackWeightLimit){
-            pick = value[index] + solve(weight, value, knapsackWeightLimit, index-1, totalWeightPicked + weight[index]);
-        }
-        
-        int notPick = solve(weight, value, knapsackWeightLimit, index-1, totalWeightPicked);
 
+    // Approach - 1 (memoization pick and not pick) 
+    // top down dp
+    // T : O(2^n) - 2 choices for each of the n cells  
+    // S : O(n) -> rec stack 
+    private static int solve(int[] weight, int[] value, int index, int remWeightLimit){
+        if(index == 0){ // reached last element, and if this weights is <= remLimimit then only we can have its value
+            if(weight[0] <= remWeightLimit)
+                return value[0];
+            return 0; 
+        }  
+
+        // pick the current weight only if that will not exceed the limit 
+        // i.e the current weight shoudld not be more then the remWeightLimit
+        int pick = 0; 
+        if(weight[index] <= remWeightLimit){
+            pick = value[index] + solve(weight, value, index-1, remWeightLimit - weight[index]);
+        }
+        int notPick = solve(weight, value, index-1, remWeightLimit);
+
+        // we find maxValuePicked after picking the current weight and not picking as well, now whichever gives us max value we choose that
         return Math.max(pick, notPick);
-    }
+    }   
 
     static int knapsack(int[] weight, int[] value, int n, int knapsackWeightLimit) {
 
-        int index = n-1, totalWeightPicked = 0; 
-        return solve(weight, value, knapsackWeightLimit, index, totalWeightPicked); // this would return the max total value picked by robber in his knapsack
+        int index = n-1, totalWeightPicked = 0; ;
+         
+        return solve(weight, value, index, knapsackWeightLimit); // this would return the max total value picked by robber in his knapsack
+
 
     }
 }
