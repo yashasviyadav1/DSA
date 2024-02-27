@@ -16,24 +16,6 @@ public class Solution {
     // Approach-4 (Space optimization)
     // Time > O(n*limit)  Space : O(2*limit) -> 2 1d arrays
     
-    // this fun returns total value that is pickable 
-    private static int solve(int[] value, int[] weight, int[][] dp, int index, int limit){
-        if(index == 0){
-            // if last wt=4  weightLimit=8 , so here we can pick 8/4 = 2 weights
-            // if last wt=4  weightLimit=14 , so here we can pick 14/4= 3 weights
-            // if last wt=5  weightLimit=2  , so here we can pick 2/5 = 0 weights 
-            return value[index]*(limit/weight[index]); // return the value we picked
-        }  
-        if(dp[index][limit] != -1) return dp[index][limit]; 
-
-        int pick = 0;
-        if(weight[index] <= limit) // make sure limit never goes -ve
-            // picked current weight ones, so limit reduces, also add current weights value ones, since its a unbound knapsack so we can use a weight any no of times, in these ques we never move after picking
-            pick = value[index] + solve(value, weight, dp, index, limit-weight[index]); 
-        int notPick = solve(value, weight, dp, index-1, limit);
-
-        return dp[index][limit] = Math.max(notPick , pick); // return whichever can take us to larger value 
-    }
     public static int unboundedKnapsack(int n, int knapLimit, int[] value, int[] weight) {
         // limit means  weight limit of knapsack (bag)
         // Tabulation to space optimization
@@ -69,25 +51,7 @@ public class Solution {
 
     // Approach-3 (bottom up dp, tabulation)
     // Time > O(n*limit)  Space : O(n*limit) -> dp
-    
-    // this fun returns total value that is pickable 
-    private static int solve(int[] value, int[] weight, int[][] dp, int index, int limit){
-        if(index == 0){
-            // if last wt=4  weightLimit=8 , so here we can pick 8/4 = 2 weights
-            // if last wt=4  weightLimit=14 , so here we can pick 14/4= 3 weights
-            // if last wt=5  weightLimit=2  , so here we can pick 2/5 = 0 weights 
-            return value[index]*(limit/weight[index]); // return the value we picked
-        }  
-        if(dp[index][limit] != -1) return dp[index][limit]; 
 
-        int pick = 0;
-        if(weight[index] <= limit) // make sure limit never goes -ve
-            // picked current weight ones, so limit reduces, also add current weights value ones, since its a unbound knapsack so we can use a weight any no of times, in these ques we never move after picking
-            pick = value[index] + solve(value, weight, dp, index, limit-weight[index]); 
-        int notPick = solve(value, weight, dp, index-1, limit);
-
-        return dp[index][limit] = Math.max(notPick , pick); // return whichever can take us to larger value 
-    }
     public static int unboundedKnapsack(int n, int knapLimit, int[] value, int[] weight) {
         // limit means  weight limit of knapsack (bag)
         int[][] dp = new int[n][knapLimit + 1];
