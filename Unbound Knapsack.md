@@ -77,7 +77,7 @@ public class Solution {
 
 ```
 
-## Approach - 2 (Top Down DP - memoization)
+## ✔️Approach - 2 (Top Down DP - memoization)
 ```java
 import java.util.*;
 public class Solution {
