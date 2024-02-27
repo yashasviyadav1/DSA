@@ -7,6 +7,43 @@ Prerequisite : 0 1 Knapsack (bounded knapsack)
 in bounded knapsack, any element can be picked only ones
 in unbounded knapsack, any element can be picked any no of times
 `
+#### How Space Optimization to single 1D array is working ? 
+![rec tree - Frame 2](https://github.com/yashasviyadav1/dsa-questions/assets/124666305/dc736ef2-630d-4d9d-86ba-e44491e2d085)
+
+
+## ⭐✔️ Approach - 5 (Space optimization-ii)
+```java
+import java.util.*;
+public class Solution {
+
+    // Approach-5 (Space optimization-ii)
+    // Time > O(n*limit)  Space : O(limit) -> single 1d arrays
+    
+    public static int unboundedKnapsack(int n, int knapLimit, int[] value, int[] weight) {
+        // limit means  weight limit of knapsack (bag)
+        // Tabulation to space optimization
+        int[] prev = new int[knapLimit + 1];
+        
+        for(int L=0; L <= knapLimit; L++){ //base case
+            prev[L] = value[0]*(L/weight[0]);
+        }
+
+        for(int index=1; index < n; index++){
+            for(int limit=0; limit <= knapLimit; limit++){
+                
+                int pick = 0;
+                if(weight[index] <= limit) // make sure limit never goes -ve, picked current weight ones, so limit reduces, also add current weights value ones, since its a unbound knapsack so we can use a weight any no of times, in these ques we never move after picking
+                    pick = value[index] + prev[limit-weight[index]]; 
+                int notPick = prev[limit];
+                prev[limit] = Math.max(notPick , pick); // return whichever can take us to larger value 
+            }
+        }
+
+        return prev[knapLimit];
+    }
+}
+
+```
 
 ## ✔️Approach - 4 (Space Optimization)
 ```java
