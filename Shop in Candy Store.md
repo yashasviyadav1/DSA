@@ -4,9 +4,12 @@
 
 ## ✔️Approach - 1 (Greedy)
 ```java
-
 class Solution{
     static ArrayList<Integer> candyStore(int candies[],int N,int K){
+        
+        // Approach-1 (greedy)
+        // Time : O(nLogn)
+        // Space : O(1)
         
         int i = 0; // next candy to buy
         int j = N-1; // next candy to pick for free
@@ -16,11 +19,8 @@ class Solution{
         // we buy the cheapest candy and pick the costlier candy for free
         Arrays.sort(candies);
         while(i <= j){
-            minAmount += candies[i++]; // buy
-            int limit = j-K+1;
-            while(j >= limit && i <= j){ // pick k candies for free
-                j--;
-            }
+            minAmount += candies[i++]; // buy cheaper candies
+            j = j-K; // took k costlier candies for free
         }
         
         // finding maxAmount spent
@@ -30,10 +30,7 @@ class Solution{
         int maxAmount = 0;
         while(j <= i){
             maxAmount += candies[i--];// buy costly candy
-            int limit = j + K -1;
-            while(j <= limit && j <= i){
-                j++; // pick cheaper ones for free
-            }
+            j = j + K; // took cheeper candies for free
         }
         
         
@@ -43,6 +40,5 @@ class Solution{
         return arr;
     }
 }
-
 
 ```
