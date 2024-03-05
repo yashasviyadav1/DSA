@@ -1,6 +1,18 @@
 # Subset sum equal to k 
 
 #### Solved at : [CodeStudio](https://www.codingninjas.com/studio/problems/subset-sum-equal-to-k_1550954/)
+#### Solved at : [GFG](https://www.geeksforgeeks.org/problems/subset-sum-problem-1611555638/1)
+
+##### Concept : 
+Finding the base case is the most important :
+if we have single element lets say `arr[0] = '5'` then target can only be achieved if either target is 5 (i.e `target == arr[0]`) or target is 0.
+so :
+```java
+if(index==0){ // reached last ele, and it can make target
+    if(target == 0 || arr[0] == target) return true;
+    else return false;
+}
+```
 
 ## ✔️⭐Approach- 4 (tabulation with space optimization)
 ```java
@@ -8,41 +20,34 @@ import java.util.* ;
 import java.io.*; 
 
 public class Solution {
-    // Approach - 4
-    // space optimization Approach 
-    // T : O(n)
-    // S : O(2*cols) 
-
-    public static boolean subsetSumToK(int n, int k, int arr[]){
-        
-        // converting tabulation into space optimization
-        boolean[] prev = new boolean[k+1]; // 0th row 
-        for(int index = 0; index < n; index++) // base case 1
-            prev[0] = true;
-
-        if(k >= arr[0]) // consider k = 5, arr[0] = 50 and we access arr[0][50] out of bound will be thrown
-            prev[arr[0]] = true; // base case 2 
+    // space optimization 
+    // T:O(n*Sum) S:O(2*Sum) 
     
-        // since ans for row 0 is in prev so start from row 1
-        for(int index=1; index < n; index++){ 
-            boolean[] curr = new boolean[k+1];
-            curr[0] = true;// base case 1 - all target 0 cells are true always 
-            for(int target=1; target <= k; target++){ // all target 0 cells are always 1 acc to base 1 so start frm target 1
-
-                boolean notPick = prev[target];  
-                boolean pick = false; 
-                if(target >= arr[index])
+    public static boolean subsetSumToK(int N, int sum, int arr[]){
+        // tabulation to space optimization
+        boolean[]prev = new boolean[sum+1];
+        // base cases
+        prev[0] = true;
+        if(arr[0] <= sum) prev[arr[0]] = true;
+        
+        for(int index=1; index <N; index++){
+            boolean[] curr = new boolean[sum+1];
+            for(int target=0; target <= sum; target++){
+                
+                boolean pick = false;
+                if(arr[index] <= target)
                     pick = prev[target-arr[index]];
-
-                // if any of the calls have ans true means we found a subset with sum k 
+                boolean notPick = prev[target];
+                
                 curr[target] = pick || notPick;
             }
-            prev = curr; // shifting
+            prev = curr;
         }
-            
-        return prev[k];
+        
+        return prev[sum];
     }
 }
+
 
 ```
 
@@ -52,37 +57,31 @@ import java.util.* ;
 import java.io.*; 
 
 public class Solution {
-    // tabulation Approach
-  // Time : O(n)
-// Space : O(n) - dp grid only
-
-    public static boolean subsetSumToK(int n, int k, int arr[]){
+    // bottom up dp (tabulation)
+    // T:O(n*Sum) S:O(n*Sum) 
+    
+    public static boolean subsetSumToK(int N, int sum, int arr[]){
+        boolean[][] dp = new boolean[N][sum+1];
+        // base cases
+        dp[0][0] = true;
+        if(arr[0] <= sum) dp[0][arr[0]] = true;
         
-        // converting top down dp into tabulation
-        boolean[][] dp = new boolean[n][k+1]; // dp
-        for(int index = 0; index < n; index++) // base case 1
-            dp[index][0] = true;
-        if(k >= arr[0]) // consider k = 5, arr[0] = 50 and we access arr[0][50] out of bound will be thrown
-            dp[0][arr[0]] = true; // base case 2 
-
-        // in rec our i was goidn from n-1 to 0 here it goes reverse it
-        // in rec our target goes from k to 0 reverse it 
-        for(int index=1; index < n; index++){ 
-            for(int target=1; target <= k; target++){
-
-                boolean notPick = dp[index-1][target];  
-                boolean pick = false; 
-                if(target >= arr[index])
+        for(int index=1; index <N; index++){
+            for(int target=0; target <= sum; target++){
+                
+                boolean pick = false;
+                if(arr[index] <= target)
                     pick = dp[index-1][target-arr[index]];
-
-                // if any of the calls have ans true means we found a subset with sum k 
+                boolean notPick = dp[index-1][target];
+                
                 dp[index][target] = pick || notPick;
             }
         }
-            
-        return dp[n-1][k];
+        
+        return dp[N-1][sum];
     }
 }
+
 ```
 
 ## ✔️ Approach - 2 (top down dp - memoization)
@@ -91,28 +90,27 @@ import java.util.* ;
 import java.io.*; 
 
 public class Solution {
-    // Top down DP Approach
-  // Time : O(n)
-// Space : O(2n) - recursve + dp grid
-    public static boolean solve(int[] arr, int[][] dp, int index, int target){
-        if(target == 0) return true; // target achieved already
-        if(index == 0) return target == arr[index]; // reached last, pick last if target achieved 
-        if(dp[index][target] != -1){
-            return (dp[index][target] == 1)? true : false;
+    // top down dp (memoization)
+    // T:O(n*Sum) S:O(n*Sum) 
+    static private boolean solve(int[] arr, int[][] dp, int index, int target){
+        if(index==0){ // reached last ele, and it can make target
+            if(target == 0 || arr[0] == target) return true;
+            else return false;
         }
+        if(dp[index][target] != -1) return (dp[index][target] == 1)? true : false;
 
-        // not picked ith element soo target is same for remaining 0 to i-1 array
-        boolean notPick = solve(arr, dp, index-1, target);  
-        // pick only when curr element is smaller then array (eg 4,1,3) t=2 so no need to pick 3 coz target will become negative
-        boolean pick = false; 
-        if(target >= arr[index])
-            pick = solve(arr, dp, index-1, target-arr[index]); // picked arr[i] so target reduced
+        // pick the current element so target will be reduced
+        // do not pick element if it is greater then target (we do not want target to be -ve)
+        boolean pick = false;
+        if(arr[index] <= target)
+            pick = solve(arr, dp, index-1, target-arr[index]);
 
-        // if any of the calls have ans true means we found a subset with sum k 
+        // not picking curr element so target remains same, we just move
+        boolean notPick = solve(arr,dp, index-1, target);
         boolean ans = pick || notPick;
-        dp[index][target] = (ans==true)?(1):(0);
+        dp[index][target] = (ans == true)?1:0; 
         return ans;
-    } 
+    }
     public static boolean subsetSumToK(int n, int k, int arr[]){
         // 2 changing states index and target as we move so 2d dp
         // dp[index][target]    index goes from n-1 to 0 total n, target goes from k to 0  i.e k+1 space(coz we only pick element with target >= element)
@@ -120,7 +118,9 @@ public class Solution {
         for(int[] row:dp) 
             Arrays.fill(row, -1); 
 
-        return solve(arr, dp, n-1, k); // is there a subset with sum = k, in arr 0 to n-1
+        boolean ans = solve(arr, dp, n-1, k); // is there a subset with sum = k, in arr 0 to n-1
+
+        return ans;
     }
 }
 
@@ -152,5 +152,7 @@ public class Solution {
         return solve(arr, n-1, k); // is there a subset with sum = k, in arr 0 to n-1
     }
 }
+
+
 
 ```
