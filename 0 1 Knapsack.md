@@ -2,6 +2,32 @@
 
 #### Solved at : [CodeStudio](https://www.codingninjas.com/studio/problems/0-1-knapsack_920542)
 
+## ✔️Approach - 5 (Space optimization to single 1d array)
+```java
+public class Solution{
+    // (space optimization - 2) 
+    // T:O(n*limit)     S:O(limit)
+    static int knapsack(int[] wt, int[] value, int n, int k) {
+
+        // tabulation to space optimization -2 
+        int[] prev = new int[k+1];
+        for(int limit=0; limit <= k; limit++)        // base cases 
+            if(wt[0] <= limit)
+                prev[limit] = value[0];
+        
+        for(int index=1; index < n; index++){
+            for(int limit=k; limit >= 0; limit--){ // we have to run this loop in rev coz other as we move from left to right we would overwrite the left values before using them, that would result in wrong ans
+                int notPick = prev[limit]; // not picked current wt
+                int pick = 0;
+                if(wt[index] <= limit) // pick current wt's value only if it is nore more then limit
+                    pick = value[index] + prev[limit-wt[index]]; // add current val
+                prev[limit] = Math.max(notPick, pick);
+            }
+        }
+        return prev[k];
+    }
+}
+```
 ## ✔️ Approach - 4 (Space Optimization to 2 1d ararys)
 ```java
 import java.util.* ;
