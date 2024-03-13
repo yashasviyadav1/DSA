@@ -3,69 +3,60 @@
 #### Solved at : [CodeStudio](https://www.codingninjas.com/studio/problems/partitions-with-given-difference_3751628)
 prerequisites : subset with k sum, subset with min diff
 
-## ✔️Approach - 4 (tabulation + space optimization)
+## ✔️Approach - 4 (Space optimization)
 ```java
-import java.util.* ;
-import java.io.*; 
-public class Solution {
-	// Approach -4  (bottom up dp - tabulation + SPACE OPTMIZATION)
-	// T : O(n*targetSum)   Space : O(2*targetSum) - only dp space
-
-	static int MOD = 1000000000 + 7; // 10^9 + 7 (req in que)
-
-	public static int countPartitions(int n, int diff, int[] arr) {	
-
-		// given that both partitions combined to form arr i.e union
-		// so, sum1 - sum2 = diff(given) 
-		// totalsum - sum2 - sum2 = diff
-		// sum2 = (totalSum-diff)/2  
-		// our que is not reduced to find no of partitions with sum == (totalSum-diff)/2  
-		int totalSum = 0;
-		for(int ele:arr) totalSum += ele;
-
-		// edge cases diff=10 {0 0 3 6}
-		if(diff > totalSum) return 0;
-		// edge case -> totalSum - d should not be odd (coz all elements are here ints so sum of ints cant be decimal)
-		if((totalSum - diff) % 2 != 0) return 0;
-
-		int targetSum = (totalSum - diff)/2;  // if we find a partition with 'targetSum' then that parition will surely have 'diff' with the other partition
-		
-
-		// tabulation to space opimization
-
-		int[] prev = new int[targetSum + 1];  //target = 0 to targetSum
-
-		//base cases to dp
-		if(arr[0] == 0)
-			prev[0] = 2; // 1st case from memo - target already achieved and last ele is 0, 2 subsets 
-		else prev[0] = 1;  // 2nd case from memo - target alrady achieved and last ele not 0, 1 subset
-
-		if(arr[0] != 0 && arr[0] <= targetSum) // old base case - arr[0] != 0 is there for cases like {0}
-			prev[arr[0]] = 1;
-
-		// rest for remaining index=0 cells it is already 0
-
-		for(int index=1; index<n; index++){ // 0 already calculated
-			int[] curr = new int[targetSum+1];
-			for(int target=0; target<=targetSum; target++){
-	
-				// find noOfPartitions possible by picking and not picking the current element
-				int pick = 0; 
-				if(arr[index] <= target)// pick cur ele only if that will not make target -ve
-					pick = prev[target-arr[index]];
-				int notPick = prev[target];
-
-				curr[target] = (pick + notPick)%MOD;// return all noOfPartitions
-	
-			}
-			prev = curr;
-		} 
-
-		return prev[targetSum];
-		
-	}
+class Solution{
+// Approach - 4  (bottom up dp - tabulation + SPACE OPTMIZATION)
+// T : O(n*targetSum)   Space : O(2*targetSum) - only dp space
+    int mod = (1000000000 + 7);
+    
+    public int countPartitions(int n, int d, int arr[]){
+        // s1 + s2 => totalSum
+        // s2 - d + s2 => totalSum
+        // s2 => (totalSum - d)/2
+        
+        int totalSum = 0;
+        for(int ele:arr) totalSum += ele;
+        int k = (totalSum - d)/2;
+        
+        if(d > totalSum) return 0; // no subset pair possible if their diff is > 0
+        if((totalSum - d )% 2 == 1){ // if this is odd, we can never make target
+            return 0;
+        } 
+        
+        // this fuction will count no of subsets with sum = k (i.e 2 subsets with diff d)
+        //  tabulation to space optimization
+        int[] prev = new int[k+1];
+        //base cases
+        if(arr[0] == 0)
+            prev[0] = 2;
+        else prev[0] = 1;
+        
+        if(arr[0] != 0 && arr[0] <= k) // arr[0] != 0 coz otherwise the value that we gave to dp[0][0] would be ovverriddedn
+            prev[arr[0]] = 1;
+        
+        //iteration
+        for(int index=1; index < n; index++){
+            int[] curr = new int[k+1];
+            for(int target=0; target <= k; target++){
+                
+                int notPick = prev[target];
+                
+                // pick
+                int pick = 0; 
+                if(arr[index] <= target)
+                    pick = prev[target - arr[index]];
+        
+                curr[target] = ((pick + notPick) % mod); // returning total Subsets sum
+            }
+            prev = curr;
+        }
+        
+        return prev[k];
+    }
 }
 ```
+
 ## ✔️Approach - 3 (bottom up tabulation - dp)
 ```java
 import java.util.* ;
