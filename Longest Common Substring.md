@@ -6,6 +6,30 @@ same as : Longest common subarray
 prerequisite : longest common subseq 
 
 ## ✔️Approach - 1 (Tabulation - bottom up dp)
+only finding the longest common substr length
+```java
+public class Solution {
+
+    // Tabulation (bottom up dp)
+    // Time : O(n*m)  Space : O(n*m)
+    public static int lcs(String s1, String s2){
+        int n = s1.length(), m= s2.length();
+        int[][] dp = new int[n+1][m+1];
+        int longCommonSubstrlen = 0;
+        
+        for(int i=1; i <= n; i++){
+            for(int j=1; j <= m; j++){
+                if(s1.charAt(i-1) == s2.charAt(j-1))  // char's matched
+                    dp[i][j] = 1 + dp[i-1][j-1]; 
+                else dp[i][j] = 0;
+                longCommonSubstrlen = Math.max(longCommonSubstrlen, dp[i][j]); // maximizing the length, coz we can find it at any part of string
+            }
+        }
+        return longCommonSubstrlen;
+    }
+}
+```
+
 finding len of longest common substring and then printing the substring
 ```java
 public class Solution {
