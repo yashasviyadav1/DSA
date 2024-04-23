@@ -4,6 +4,43 @@
 ![Flow - Frame 8](https://github.com/yashasviyadav1/dsa-questions/assets/124666305/edb048d8-c968-46da-bdb4-ed562da4d78a)
 ![Flow - Frame 9](https://github.com/yashasviyadav1/dsa-questions/assets/124666305/550efe78-e2a2-4b83-b4dc-266bc8038c36)
 
+## ✔️Approach - 3 (bottom up dp - tabulation)
+```java
+class Solution{
+    // Approach -3 (bottom up dp - tabulation)
+    // T:O(n*n*n) S:O(N^2 + N) - dp
+    
+    // returns the min operations/multiplication steps required to do
+    // multiplication of all matricies from index i to j
+    
+    static int matrixMultiplication(int N, int arr[])
+    {
+        // tabulation
+        // 2 changing states i, j both goes from(0 -> N-1) so N spaces
+        int[][] dp = new int[N][N];
+        // base case
+        for(int i=0; i < N; i++)
+            dp[i][i] = 0;
+        
+        // iteration
+        for(int i=N-1; i >= 1; i--){
+            for(int j=i+1; j < N; j++){ // not from 1 to N-1 coz i should be on left of j always so j starts from i
+                // doing partitioning
+                // trying all types of partioning and from every one of them choosing the ope that required min steps/operations
+                int minOperations = (int)1e9; // minimize
+                for(int k=i; k < j; k++){
+                    int steps = arr[i-1]*arr[k]*arr[j] + dp[i][k] + dp[k+1][j];
+                    minOperations = Math.min(minOperations, steps);
+                }
+                dp[i][j] = minOperations;
+            }
+        }
+        
+        return dp[1][N-1];
+    }
+}
+```
+
 ## ✔️Approach - 2 (top down dp - memoization)
 ```java
 
