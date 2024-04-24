@@ -3,6 +3,8 @@
 ### Solved at : [GFG](https://www.geeksforgeeks.org/problems/matrix-chain-multiplication0303/1)
 ![Flow - Frame 8](https://github.com/yashasviyadav1/dsa-questions/assets/124666305/edb048d8-c968-46da-bdb4-ed562da4d78a)
 ![Flow - Frame 9](https://github.com/yashasviyadav1/dsa-questions/assets/124666305/550efe78-e2a2-4b83-b4dc-266bc8038c36)
+Why we use this Formula? 
+![image](https://github.com/yashasviyadav1/dsa-questions/assets/124666305/c3adf69f-4bfd-4160-af50-eae7ef5e0ab3)
 
 ## ✔️Approach - 3 (bottom up dp - tabulation)
 ```java
