@@ -3,6 +3,17 @@
 #### Solved at : [CodeStudio](https://www.codingninjas.com/studio/problems/partitions-with-given-difference_3751628)
 prerequisites : subset with k sum, subset with min diff
 
+Concept : 
+```
+s1 - s2 = diff (given)
+so, s1 = diff + s2
+
+totalSum = s1 + s2
+totalSum = diff + s2 + s2 (put s1 = diff + s2)
+totalSum = diff + 2*(s2)
+s2 => (totalSum - diff)/2   (lets use this)
+```
+
 ## ✔️Approach - 4 (Space optimization)
 ```java
 class Solution{
