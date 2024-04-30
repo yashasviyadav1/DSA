@@ -4,6 +4,66 @@
 
 note : modulo is asked in question due to very large answers
 
+## ✔️Approach - 3 (bottom up dp - tabulation)
+```java
+
+//bottom up dp - T:O(n*n*2) S:O(n*n*2)
+
+class Solution{
+    static int mod = 1003;
+    
+    static int countWays(int n, String str){
+        
+        // tabulation
+        int[][][] dp = new int[n][n+1][2]; //+1 coz if i=n-1 j=n so to acces n we need to have n+1 space
+                
+        // base case
+        for(int i=0; i <= n-1; i++){
+            for(int j=0; j <= n; j++){
+                for(int isTrue=0; isTrue <= 1; isTrue++){
+                    if(i > j) dp[i][j][isTrue] = 0; // no char left
+                    if(i == j){ // last char
+                        if(isTrue == 1) dp[i][j][isTrue] = (str.charAt(i) == 'T')?1:0;
+                        else dp[i][j][isTrue] = (str.charAt(i) == 'F')?1:0;
+                    }
+                }
+            }
+        }
+        
+        // iteration
+        for(int i=n-1; i >= 0; i--){
+            for(int j=i+1; j < n; j++){ // i is always on left of j and i==j is already handled in base case so start frmo j=i+1 
+                for(int isTrue=0; isTrue <= 1; isTrue++){
+                    int ways=0;
+                    for(int k=i+1; k < j; k++){
+                        int LT = dp[i][k-1][1];
+                        int LF = dp[i][k-1][0];
+                        int RT = dp[k+1][j][1];
+                        int RF = dp[k+1][j][0];
+                        
+                        if(str.charAt(k) == '&'){
+                            if(isTrue == 1) ways += (LT*RT);
+                            else ways += ((LT*RF + LF*RT + LF*RF) % mod);
+                        }
+                        else if(str.charAt(k) == '|'){
+                            if(isTrue == 1) ways += ((LT*RF + LF*RT + LT*RT) % mod);
+                            else ways += (LF*RF);
+                        }
+                        else if(str.charAt(k) == '^'){
+                            if(isTrue == 1) ways += ((LT*RF + LF*RT) % mod);
+                            else ways += ((LT*RT + LF*RF) % mod);
+                        }
+                    }
+                    dp[i][j][isTrue] = (ways)%mod;
+                }
+            }
+        }
+                
+        return dp[0][n-1][1];
+    }
+}
+```
+
 ## ✔️Approach - 2 (top down dp - memoization)
 ```java
 // Approach -2 (top down dp - memoization) 
