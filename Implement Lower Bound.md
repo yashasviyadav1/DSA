@@ -2,7 +2,9 @@
 
 ### Solved at : [CodeStudio](https://www.naukri.com/code360/problems/lower-bound_8165382)
 
-note : lower bound is the smallest index `i` such that `arr[i] >= target`
+
+`lower bound` of a `target` is the smallest index `i` such that `arr[i] >= target`
+`upper bound` of a `target` is the smallest index `i` such that `arr[i] > target`
 
 ## ✔️Approach - 1 (using binary search) 
 ```java
