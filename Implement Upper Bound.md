@@ -1,6 +1,6 @@
 # Implement Upper Bound
 
-### Solved at : [Leetcode](https://www.naukri.com/code360/problems/implement-upper-bound_8165383)
+### Solved at : [CodeStudio](https://www.naukri.com/code360/problems/implement-upper-bound_8165383)
 
 
 `lower bound` of a `target` is the smallest index `i` such that `arr[i] >= target`.
