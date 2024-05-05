@@ -1,5 +1,10 @@
 # Ceil The Floor
 
+```
+ floor = largest no which is <= target
+ ceil = smallest no which is >= target   
+```
+
 ### Solved at :  [CodeStudio](https://www.naukri.com/code360/problems/ceiling-in-a-sorted-array_1825401) , [GFG](https://www.geeksforgeeks.org/problems/ceil-the-floor2802/1)
 ## ✔️Approach - 1 (simple binary search technique)
 CodeStudio Varient :- 
