@@ -7,6 +7,7 @@ Why we use this Formula?
 ![image](https://github.com/yashasviyadav1/dsa-questions/assets/124666305/c3adf69f-4bfd-4160-af50-eae7ef5e0ab3)
 
 ## ✔️Approach - 3 (bottom up dp - tabulation)
+running j from i+1 coz i==j is base case and also j is always on right of i
 ```java
 class Solution{
     // Approach -3 (bottom up dp - tabulation)
@@ -36,6 +37,37 @@ class Solution{
                 }
                 dp[i][j] = minOperations;
             }
+        }
+        
+        return dp[1][N-1];
+    }
+}
+```
+not running j from i+1
+```java
+// TABULATION - bottom up dp - T:O(n*n*n) S:O(n*n)
+class Solution{
+
+    static int matrixMultiplication(int N, int arr[])
+    {
+        // TABULATION
+        int[][] dp = new int[N][N]; 
+        
+        // base
+        for(int x=0; x < N; x++)
+            dp[x][x] = 0;
+            
+        // iteration
+        for(int i=N-1; i >= 1; i--){
+            for(int j=1; j <= N-1; j++){
+                if(i == j) continue; // making sure base case does'nt get overwritten
+                int minOperations = (int)1e9;
+                for(int k=i; k <= j-1; k++){
+                    int operations = arr[i-1]*arr[k]*arr[j] + dp[i][k] + dp[k+1][j];
+                    minOperations = Math.min(minOperations, operations);
+                }
+                dp[i][j] = minOperations;
+            }        
         }
         
         return dp[1][N-1];
