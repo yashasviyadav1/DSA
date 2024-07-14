@@ -1,6 +1,30 @@
 # Frog Jump (DP) 
 #### solved at : [CodeStudio](https://www.codingninjas.com/studio/problems/frog-jump_3621012?utm_source=striver&utm_medium=website&utm_campaign=a_zcoursetuf)
 
+## ✔️Memoization (in java)
+```java
+import java.util.* ;
+import java.io.*; 
+public class Solution {
+    private static int solve(int[] heights, int[] dp, int n){
+        // acc to que we are already at step1 (index 0 step) so no energy req to reach step 1
+        if(n == 0) return 0; 
+        // we can reach step2 (from step1 -> step2 )
+        if(n == 1) return Math.abs(heights[0]-heights[1]);
+        if(dp[n] != -1) return dp[n];
+        return dp[n] = Math.min(
+            Math.abs(heights[n] - heights[n-1]) + solve(heights, dp, n-1),
+            Math.abs(heights[n] - heights[n-2]) + solve(heights, dp, n-2)
+        );
+    }
+    public static int frogJump(int n, int heights[]) {
+        int[] dp = new int[n];
+        Arrays.fill(dp, -1);
+        return solve(heights, dp, n-1); // n-1 coz 4th step index is 3
+    }
+}
+```
+
 ## Approach - 4.1 (Tabulation + space optimisation)
 ```java
 import java.util.* ;
