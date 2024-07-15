@@ -1,6 +1,6 @@
 #  Ninja’s Training
 
-## Solved at : [Code Studio](https://www.codingninjas.com/studio/problems/ninja-s-training_3621003?source=youtube&campaign=striver_dp_videos&utm_source=youtube&utm_medium=affiliate&utm_campaign=striver_dp_videos)
+#### Solved at : [Code Studio](https://www.codingninjas.com/studio/problems/ninja-s-training_3621003?source=youtube&campaign=striver_dp_videos&utm_source=youtube&utm_medium=affiliate&utm_campaign=striver_dp_videos), [GFG](https://www.geeksforgeeks.org/problems/geeks-training/1)
 
 ## ⭐✔️Approach - 3 (Space optimisation)
 ```java
@@ -137,47 +137,52 @@ public class Solution {
 ```
 
 ## ✔️⭐Approach - 1 (Top down dp, Memoization)
-```java
-import java.util.*;
-public class Solution {
+```
+//Memoization T:O(n * m)
+// shifted index to store -1 prev in dp[][0]
 
-    /*  topDown dp
-         |-------tasks
-    days |
-         |
-            2 changing states 
-            Time : (n*4*3)
-            Space : O(n*4)
-
-    */
-    private static int solve(int[][] points, int[][] dp, int currDay, int prevPerformed){
-        // last day
-        if(currDay < 0) return 0;
-        
-        if(dp[currDay][prevPerformed] != -1) return dp[currDay][prevPerformed];
-
-        // we are on some day, explore all the tasks of that day cols (tasks)
-        int maxi = 0;
-        for(int task=0; task < 3; task++){ 
-            if(task == prevPerformed) // cant perform
+class Solution{
+    private int solve(int[][] points, int[][] dp, int row, int prevPickedCol){
+        if(row == points.length) return 0;
+        if(dp[row][prevPickedCol + 1] != -1) return dp[row][prevPickedCol + 1]; // shifted index
+        int maxSum = Integer.MIN_VALUE;
+        for(int col=0; col < points[row].length; col++){
+            if(col == prevPickedCol) // can't do prev done activity
                 continue;
-            maxi = Math.max(maxi, points[currDay][task] + solve(points,dp, currDay-1, task)); // curr task becomes the new prev for next one 
+            int sum = points[row][col] + solve(points, dp, row+1, col); 
+            maxSum = Math.max(maxSum, sum);
         }
-        return dp[currDay][prevPerformed] = maxi;
+        return dp[row][prevPickedCol + 1] = maxSum;
     }
-    public static int ninjaTraining(int n, int points[][]) {
-
-        // task tange is 0 to 2
-        int prevPerformed = 3; // means no task is performed yey
-
-        // there are 2 changing parameters so to store state we need 2d dp
-        int[][] dp = new int[n][4]; // dp[currDay][lastPerformed]
-        for(int i=0; i < n; i++)
-            for(int j=0; j < 4; j++)
-                dp[i][j] = -1;
-
-        return solve(points, dp, n-1 ,prevPerformed); 
+    public int maximumPoints(int points[][],int N){
+        int prevPickedCol = -1; 
+        int M = points[0].length;
+        int[][] dp = new int[N][M + 1]; // values of prev lies = -1 to M-1 i.e M+1 values
+        for(int[] row:dp) Arrays.fill(row, -1);
+        return solve(points, dp, 0, prevPickedCol);
     }
+}
+```
 
+### Approach - Bruteforce
+```java
+//BRUTEFORCE T:O(2^n * 2^m)
+
+class Solution{
+    private int solve(int[][] points, int row, int prevPickedCol){
+        if(row == points.length) return 0;
+        int maxSum = Integer.MIN_VALUE;
+        for(int col=0; col < points[row].length; col++){
+            if(col == prevPickedCol) // can't do prev done activity
+                continue;
+            int sum = points[row][col] + solve(points, row+1, col); 
+            maxSum = Math.max(maxSum, sum);
+        }
+        return maxSum;
+    }
+    public int maximumPoints(int points[][],int N){
+        int prevPickedCol = -1; 
+        return solve(points, 0, prevPickedCol);
+    }
 }
 ```
