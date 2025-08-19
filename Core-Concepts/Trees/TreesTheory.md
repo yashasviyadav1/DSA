@@ -1,3 +1,13 @@
+
+Index for this page : 
+- Trees
+- Binary Search Trees (BST)
+- AVL Trees
+- Red Black Trees
+
+
+---
+
 # Trees
 
 Trees are non-linear data structures that represent hierarchical data. The structures you listed are primarily used for efficient searching, insertion, and deletion operations, often improving upon the limitations of simpler structures like arrays or linked lists.
