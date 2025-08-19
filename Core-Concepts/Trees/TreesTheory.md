@@ -290,3 +290,160 @@ Complete dry run
 | **Search** | **O(log n)** |
 | **Insertion** | **O(log n)** |
 | **Deletion** | **O(log n)** |
+
+----
+----
+
+ 
+
+
+## <b>Red-Black Trees</b>
+
+![red black tree image](https://i.ibb.co/RTZfN2Tg/image.png)
+
+Red Black tree is a BST, is balanced (not very strictly), has an extra color property to the nodes, focuses on making insertion and deletions fast. since rotation are lesser but since it is not strictly balanced therefore searching is bit slower as compared to AVL (which are strictly balanced)
+
+
+The Problem with AVL Trees
+An AVL tree is a perfectionist. It must be perfectly balanced (the height difference between any two subtrees can be at most 1). To maintain this strict balance, an AVL tree might have to perform many rotations after an insertion or deletion, potentially all the way up to the root of the tree. This can be slow if you're constantly adding and removing nodes.
+
+What Red-Black Trees Do Differently
+A Red-Black tree is more pragmatic. It's "good enough" balanced. It uses a clever set of rules about node colors to ensure the tree never gets too lopsided, guaranteeing O(log n) performance, but it doesn't enforce the super-strict balance of an AVL tree.
+
+This "less strict" balancing is its main advantage. It means that to restore balance after an insertion or deletion, a Red-Black tree needs far fewer rotations.
+
+Insertion: A Red-Black tree requires at most 2 rotations.
+
+Deletion: A Red-Black tree requires at most 3 rotations.
+
+An AVL tree, on the other hand, could require up to O(log n) rotations for a deletion.
+
+
+### Properties of Red-Black Trees
+A Red-Black Tree have the following properties:
+
+- Node Color: Each node is either red or black.
+- Root Property: The root of the tree is always black.
+- Red Property: Red nodes cannot have red children (no two consecutive red nodes on any path).
+- Black Property: Every path from a node to its descendant null nodes (leaves) has the same number of black nodes.
+- Leaf Property: All leaves (NIL nodes) are black.
+
+### Red-Black Tree: Insertion Fixup Scenarios
+
+The insertion fixup process is initiated when a newly inserted **RED** node has a **RED** parent, which violates the rule that no two red nodes can be adjacent. The entire fixup strategy depends on the color of the new node's **uncle** (the parent's sibling).
+
+### Case 1: Uncle is RED (The "Recolor" Case)
+
+This is the non-terminal, propagating case. It solves the local issue but pushes the potential problem higher up the tree.
+
+**The Situation:**
+
+- The new node is **RED**.
+- Its parent is **RED**.
+- Its uncle is also **RED**.
+
+**The Goal:**
+To fix the local "red-red" violation and preserve the black-height by pushing the problem up to the grandparent.
+
+**The Actions:**
+
+1. **Recolor Parent** to **BLACK**.
+2. **Recolor Uncle** to **BLACK**.
+3. **Recolor Grandparent** to **RED**.
+
+**The Outcome:**
+The local violation is solved. The algorithm then treats the **grandparent** as the new problem node and repeats the entire fixup check from that position.
+
+### Case 2: Uncle is BLACK (and forms a "Triangle")
+
+This is a transitional case. Its only purpose is to transform the structure into the final, terminal "line" case.
+
+**The Situation:**
+
+- The new node is **RED**.
+- Its parent is **RED**.
+- Its uncle is **BLACK**.
+- The path from the grandparent to the new node forms a "kink" (e.g., a Left-Right or Right-Left path).
+
+**The Goal:**
+To perform a single rotation that "straightens" the kink into a line, setting up the scenario for Case 3.
+
+**The Actions:**
+
+- Perform a **rotation on the parent** towards the new node.
+    - For a "Left-Right" triangle, perform a **Left Rotation** on the parent.
+    - For a "Right-Left" triangle, perform a **Right Rotation** on the parent.
+
+**The Outcome:**
+The "red-red" violation still exists, but the nodes now form a straight line. The algorithm immediately proceeds to Case 3 to solve the problem.
+
+### Case 3: Uncle is BLACK (and forms a "Line")
+
+This is the **terminal case**. It completely solves the violation, and the insertion process ends.
+
+**The Situation:**
+
+- The new node is **RED**.
+- Its parent is **RED**.
+- Its uncle is **BLACK**.
+- The path from the grandparent to the new node is a straight line (e.g., a Left-Left or Right-Right path).
+
+**The Goal:**
+To perform a final rotation and recoloring to fix the "red-red" violation and restore all Red-Black Tree properties.
+
+**The Actions:**
+
+1. **Recolor Parent** to **BLACK**.
+2. **Recolor Grandparent** to **RED**.
+3. **Perform a rotation on the grandparent** away from the new node.
+    - For a "Left-Left" line, perform a **Right Rotation** on the grandparent.
+    - For a "Right-Right" line, perform a **Left Rotation** on the grandparent.
+
+**The Outcome:**
+The violation is resolved. The tree is now a valid Red-Black Tree. **The process is finished.**
+
+## Scenarios under deletion of a node in Red-Black tree
+
+lets take we deleted a `node` whenever its `Red` (we are done)
+
+But if `node` was `BLACK`. then find its sibling lets say `w` in this case
+
+> *2 problems can be caused by deleting nodes* in a red black tree ➖
+> 
+> - 2 consecutive red nodes can occur (violation)
+> - no of black nodes i.e the black height from root to leaf nodes can become different in the different paths (violation)
+
+### **Case 1: Sibling `w` is RED**
+
+- **Situation:** The sibling is **RED**. This means the parent must be **BLACK**.
+- **Fix:**
+    1. Recolor the sibling `w` to **BLACK**.
+    2. Recolor the parent to **RED**.
+    3. Perform a **Left Rotation** on the parent.
+- **Result:** This doesn't solve the problem, but it transforms it into one of the other cases (Case 2, 3, or 4). We have now ensured that the sibling is **BLACK**, so we can proceed.
+
+### **Case 2: Sibling `w` is BLACK, and both of its children are BLACK**
+
+- **Situation:** The sibling and its children are all **BLACK**. There are no red nodes on that side to help us.
+- **Fix:**
+    1. Recolor the sibling `w` to **RED**.
+- **Result:** We have effectively moved the "double black" problem from `x` up to its parent. We now repeat the entire `deleteFixup` process with the parent as the new `x`. This is the **non-terminal**, propagating case.
+
+### **Case 3: Sibling `w` is BLACK, its left child is RED, and its right child is BLACK**
+
+- **Situation:** The sibling is **BLACK**, but it has a "near" red child that forms a triangle.
+- **Fix:**
+    1. Recolor the sibling `w` to **RED**.
+    2. Recolor `w`'s left child to **BLACK**.
+    3. Perform a **Right Rotation** on the sibling `w`.
+- **Result:** This transforms the problem into the final, terminal Case 4.
+
+### **Case 4: Sibling `w` is BLACK, and its right child is RED**
+
+- **Situation:** The sibling is **BLACK** and has a "far" red child that forms a line. This is the **terminal** case. (note far child is a child that is away from the problem node x
+- **Fix:**
+    1. Recolor the sibling `w` to the parent's original color.
+    2. Recolor the parent to **BLACK**.
+    3. Recolor `w`'s right child to **BLACK**.
+    4. Perform a **Left Rotation** on the parent.
+- **Result:** The "double black" is resolved, the black-height is restored, and the entire deletion process is complete. We set `x` to the root to terminate the loop.
