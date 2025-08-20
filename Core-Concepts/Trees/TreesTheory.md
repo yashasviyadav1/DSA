@@ -4,6 +4,7 @@ Index for this page :
 - Binary Search Trees (BST)
 - AVL Trees
 - Red Black Trees
+- 2-3 Trees
 
 
 ---
@@ -457,3 +458,282 @@ But if `node` was `BLACK`. then find its sibling lets say `w` in this case
     3. Recolor `w`'s right child to **BLACK**.
     4. Perform a **Left Rotation** on the parent.
 - **Result:** The "double black" is resolved, the black-height is restored, and the entire deletion process is complete. We set `x` to the root to terminate the loop.
+
+----
+---
+
+
+## <b>2-3 Trees</b>
+
+There are 2 types of nodes in this tree
+
+- 2 nodes → nodes with 1 data and 2 childs
+- 3 nodes → nodes with 2 data values and 3 children
+
+The time complexity of search/insert/delete is O(log N) .
+
+A 2-3 tree is a *B-tree of order 3*.
+
+***Properties of 2-3 tree:***
+
+- Nodes with two children are called 2-nodes. The 2-nodes have one data value and two children
+- Nodes with three children are called 3-nodes. The 3-nodes have two data values and three children.
+- Data is stored in sorted order.
+- It is a balanced tree.
+- All the leaf nodes are at same level.
+- Each node can either be leaf, 2 node, or 3 node.
+- Always insertion is done at leaf.
+
+**Search:** To search a key **K** in given 2-3 tree **T**, we follow the following procedure:
+
+Base cases:
+
+1. If **T** is empty, return False (key cannot be found in the tree).
+2. If current node contains data value which is equal to **K**, return True.
+3. If we reach the leaf-node and it doesn't contain the required key value **K**, return False.
+
+Recursive Calls:
+
+1. If **K** < currentNode.leftVal, we explore the left subtree of the current node.
+2. Else if currentNode.leftVal < **K** < currentNode.rightVal, we explore the middle subtree of the current node.
+3. Else if **K** > currentNode.rightVal, we explore the right subtree of the current node.
+
+![image.png](https://i.ibb.co/7tf48WRj/image.png)
+
+### Insertion process in 2-3 Trees
+
+**Insertion:** There are 3 possible cases in insertion which have been discussed below: 
+
+- **Case 1:** Insert in a node with only one data element 
+
+![image.png](https://i.ibb.co/hRbgTqZc/image.png)
+
+- **Case 2:** Insert in a node with two data elements whose parent contains only one data element.
+
+![image.png](https://i.ibb.co/KjzZXb0c/image.png)
+
+• **Case 3:** Insert in a node with two data elements whose parent also contains two data elements. 
+
+ 
+
+![image.png](https://i.ibb.co/zhwX6Fdy/image.png)
+
+### Deletion process in the 2-3 trees
+
+*delete the following values from it: `69, 72, 99, 81`*
+
+```java
+			  [ 54 ]
+             /      \
+            /        \
+      [ 36 ]          [ 69 | 90 ]
+      /    \          /    |       \
+     /      \        /     |        \
+[ 18 | 27 ] [ 45 ][ 63 ][ 72 | 81 ] [ 99 ]
+```
+
+---
+
+### **1. Deleting 69**
+
+### **Step 1.1: Swap with In-order Successor**
+
+First, we locate **69** in an internal node. We can't just delete it. We must **swap** it with its in-order successor, which is the smallest key in its right subtree: **72**.
+
+- Tree *after swapping 69 and 72*:
+```
+              [ 54 ]
+             /       \
+            /         \
+      [ 36 ]           [ 72 | 90 ]
+      /    \          /    |       \
+     /      \        /     |        \
+[ 18 | 27 ] [ 45 ] [ 63 ] [69|81]   [ 99 ]
+```
+### **Step 1.2: Delete from Leaf**
+
+Now, our target **69** is in a leaf node `[ 69 | 81 ]`. Since this is a 3-node (it has two keys), we can safely remove **69** without causing an underflow.
+
+- **Final tree after deleting 69**:
+```
+              [ 54 ]
+             /       \
+            /         \
+      [ 36 ]          [ 72 | 90 ]
+      /    \          /    |    \
+     /      \        /     |     \
+[ 18 | 27 ] [ 45 ] [ 63 ] [ 81 ]  [ 99 ]
+```
+---
+
+### **2. Deleting 72**
+
+### **Step 2.1: Swap with In-order Successor**
+
+The value **72** is in an internal node. We **swap** it with its in-order successor, **81**.
+
+- Tree *after swapping 72 and 81*:
+```
+              [ 54 ]
+             /      \
+            /        \
+      [ 36 ]          [ 81 | 90 ]
+      /    \          /    |    \
+     /      \        /     |     \
+[ 18 | 27 ] [ 45 ] [ 63 ] [ 72 ] [ 99 ]
+```
+### **Step 2.2: Delete from Leaf (Causing Underflow)**
+
+Now we delete **72** from the leaf node `[ 72 ]`. Removing the only key in a node makes it empty, causing an **underflow**. 😱
+
+- Tree *showing the underflow*:
+```
+              [ 54 ]
+             /      \
+            /        \
+      [ 36 ]          [ 81 | 90 ]
+      /    \          /    |    \
+     /      \        /     |     \
+[ 18 | 27 ] [ 45 ] [ 63 ] [   ]   [ 99 ]
+```
+### **Step 2.3: Fix Underflow with a Merge**
+
+The empty node's siblings, `[ 63 ]` and `[ 99 ]`, are 2-nodes, so they can't spare a key for rotation. We must **merge**. We'll merge the empty node with its left sibling `[ 63 ]`.
+
+1. Pull down the separating key from the parent `[ 81 | 90 ]`, which is **81**.
+2. Combine `[ 63 ]`, the key `81`, and the empty node `[ ]` into a new node `[ 63 | 81 ]`.
+3. The parent node becomes `[ 90 ]`.
+- **Final tree after deleting 72**: ✅
+```
+              [ 54 ]
+             /      \
+            /        \
+      [ 36 ]           [ 90 ]
+      /    \           /     \
+     /      \         /       \
+[ 18 | 27 ] [ 45] [ 63 | 81 ] [ 99 ]
+```
+---
+
+### **3. Deleting 99**
+
+### **Step 3.1: Delete from Leaf (Causing Underflow)**
+
+We locate **99** in a leaf node `[ 99 ]`. Deleting it immediately causes an **underflow**.
+
+- Tree *showing the underflow*:
+```
+              [ 54 ]
+             /      \
+            /        \
+      [ 36 ]           [ 90 ]
+      /    \           /     \
+     /      \         /       \
+[ 18 | 27 ] [ 45 ][ 63 | 81 ] [    ]
+```
+### **Step 3.2: Fix Underflow with a Rotation**
+
+The empty node's sibling `[ 63 | 81 ]` is a 3-node, which is "rich" enough to spare a key. We perform a **rotation**.
+
+1. The parent's key `[ 90 ]` moves down into the empty node.
+2. The largest key from the rich sibling, **81**, moves up to replace the parent's key.
+3. The rich sibling is now just `[ 63 ]`.
+- **Final tree after deleting 99**: ✅
+```
+              [ 54 ]
+             /      \
+            /        \
+      [ 36 ]           [ 81 ]
+      /    \           /    \
+     /      \         /      \
+[ 18 | 27 ] [ 45 ]  [ 63 ]   [ 90 ]
+```
+---
+
+### **4. Deleting 81**
+
+This one is a bit more complex and involves a propagated underflow.
+
+### **Step 4.1: Swap with In-order Successor**
+
+**81** is in an internal node. We **swap** it with its successor, **90**.
+
+- Tree *after swapping 81 and 90*:
+```
+              [ 54 ]
+             /      \
+            /        \
+      [ 36 ]           [ 90 ]
+      /    \           /    \
+     /      \         /      \
+[ 18 | 27 ] [ 45 ]  [ 63 ]  [ 81 ]
+```
+### **Step 4.2: Delete from Leaf (Causing Underflow)**
+
+We delete **81** from the leaf node `[ 81 ]`, which causes an **underflow**.
+
+- Tree *showing the leaf underflow*:
+```
+              [ 54 ]
+             /      \
+            /        \
+      [ 36 ]           [ 90 ]
+      /    \           /    \
+     /      \         /      \
+[ 18 | 27 ] [ 45 ]   [ 63 ]   [    ]
+```
+
+### **Step 4.3: First Merge (Propagating Underflow)**
+
+The sibling `[ 63 ]` is a 2-node, so we must **merge**.
+
+1. Pull down the parent's key `[ 90 ]`.
+2. Merge `[ 63 ]`, the key `90`, and the empty node `[ ]` to get `[ 63 | 90 ]`.
+3. This leaves the parent node empty, **propagating the underflow up** the tree. 😵
+- Tree *showing the propagated underflow*:
+```
+              [ 54 ]
+             /      \
+            /        \
+      [ 36 ]          [    ]
+      /    \             |
+     /      \            |
+[ 18 | 27 ] [ 45 ]  [ 63 | 90 ]
+```
+### **Step 4.4: Second Merge (at the Root)**
+
+Now we deal with the empty internal node. Its sibling is `[ 36 ]`, which is a 2-node. We must **merge** again.
+
+1. Pull down the separating key from the root, **54**.
+2. Merge `[ 36 ]`, the key `54`, and the empty node `[ ]` to create a new node `[ 36 | 54 ]`.
+3. This merge makes the **root node empty**.
+- Tree *showing the empty root*:
+```
+             [    ]
+                |
+                |
+          [ 36 | 54 ]
+         /     |     \
+        /      |      \
+[ 18 | 27 ]  [ 45 ]  [ 63 | 90 ]
+```
+### **Step 4.5: Fix the Root**
+
+An empty root is removed, and its single child becomes the new root. The height of the tree decreases by one.
+
+- **Final tree after deleting 81**: ✅
+```
+          [ 36 | 54 ]
+         /     |     \
+        /      |      \
+[ 18 | 27 ]  [ 45 ]  [ 63 | 90 ]
+```
+A comparision table for Time complexity
+
+| Data Structure | Search | Insertion | Deletion |
+| --- | --- | --- | --- |
+| **Binary Tree** (General) | Avg: O(n)  Worst: O(n) | Avg: O(n)  Worst: O(n) | Avg: O(n)  Worst: O(n) |
+| **Binary Search Tree** (BST) | Avg: O(logn)  Worst: O(n) | Avg: O(logn)  Worst: O(n) | Avg: O(logn)  Worst: O(n) |
+| **AVL Tree** | Avg: O(logn)  Worst: O(logn) | Avg: O(logn)  Worst: O(logn) | Avg: O(logn)  Worst: O(logn) |
+| **Red-Black Tree** | Avg: O(logn) Worst: O(logn) | Avg: O(logn)  Worst: O(logn) | Avg: O(logn)  Worst: O(logn) |
+| **2-3 Tree** | Avg: O(logn)  Worst: O(logn) | Avg: O(logn)  Worst: O(logn) | Avg: O(logn)  Worst: O(logn) |
