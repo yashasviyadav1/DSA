@@ -5,6 +5,7 @@ Index for this page :
 - AVL Trees
 - Red Black Trees
 - 2-3 Trees
+- B-Tree
 
 
 ---
@@ -737,3 +738,486 @@ A comparision table for Time complexity
 | **AVL Tree** | Avg: O(logn)  Worst: O(logn) | Avg: O(logn)  Worst: O(logn) | Avg: O(logn)  Worst: O(logn) |
 | **Red-Black Tree** | Avg: O(logn) Worst: O(logn) | Avg: O(logn)  Worst: O(logn) | Avg: O(logn)  Worst: O(logn) |
 | **2-3 Tree** | Avg: O(logn)  Worst: O(logn) | Avg: O(logn)  Worst: O(logn) | Avg: O(logn)  Worst: O(logn) |
+
+
+---
+---
+---
+
+
+## B-Trees (not binary trees)
+
+B-Tree is **not a binary tree**. They are both types of search trees, but they have a fundamental structural difference.
+
+A **binary tree** is defined by the rule that each node can have **at most two children** (a left child and a right child).
+
+A **B-Tree**, on the other hand, is a generalization where a node can have **`many children`** (often hundreds or even thousands).
+
+![image.png](https://i.ibb.co/jv2GMgBf/image.png)
+
+---
+
+### Key Differences
+
+Here's a simple breakdown of the distinctions:
+
+- **Number of Children:**
+    - **Binary Tree:** Maximum of 2 children per node.
+    - **B-Tree:** Can have a large number, *m*, of children per node.
+- **Number of Keys:**
+    - **Binary Tree:** Each node stores a single key.
+    - **B-Tree:** Each node can store many keys (up to *m*1).
+- **Primary Use Case:**
+    - **Binary Tree:** Generally used for data structures that reside in main memory (RAM).
+    - **B-Tree:** Optimized for systems that use secondary storage like hard disks or SSDs (e.g., databases and filesystems).
+- **Structure & Performance:**
+    - Because binary trees are "tall and skinny," traversing them can require many node lookups. This is fine in fast RAM.
+    - B-Trees are "short and wide." By storing many keys in a single node (which corresponds to a disk block), they drastically reduce the number of slow disk reads needed to find data. This is their main advantage. 🌳
+
+In short, while they share the concept of ordering keys to enable efficient searching, a B-Tree's ability to have many children per node makes it a fundamentally different and more complex structure designed specifically for storage systems.
+
+### Applications of B-Trees
+
+- It is used in large databases to access data stored on the disk
+- Searching for data in a data set can be achieved in significantly less time using the B-Tree
+- With the indexing feature, multilevel indexing can be achieved.
+- Most of the servers also use the B-tree approach.
+- B-Trees are used in CAD systems to organize and search geometric data.
+- B-Trees are also used in other areas such as natural language processing, computer networks, and cryptography.
+
+### Advantages of B-Trees
+
+- B-Trees have a guaranteed time complexity of O(log n) for basic operations like insertion, deletion, and searching, which makes them suitable for large data sets and real-time applications.
+- B-Trees are self-balancing.
+- High-concurrency and high-throughput.
+- Efficient storage utilization.
+
+### Disadvantages of B-Trees
+
+- B-Trees are based on disk-based data structures and can have a high disk usage.
+- Not the best for all cases.
+- For small datasets, the search time in a B-Tree might be slower compared to a binary search tree, as each node may contain multiple keys.
+
+### **Insert Operation in B-Tree**
+
+![image.png](https://i.ibb.co/1Y4KtVqK/image.png)
+
+![image.png](https://i.ibb.co/5X1MwCjg/image.png)
+
+![image.png](https://i.ibb.co/Mx56GZzt/image.png)
+
+## Insertion in a B-Tree (t = 2)
+
+We are constructing a B-Tree of minimum degree **t = 2**. This means:
+
+- Each node can contain **at most 2t - 1 = 3 keys**.
+- Each non-root node must contain **at least t - 1 = 1 key**.
+- Root is allowed to have fewer keys initially.
+
+We will insert keys **1 through 10** step by step.
+
+---
+
+### Insert 1
+
+- Tree is empty initially.
+- Create a root node and place **1** inside it.
+
+```
+[1]
+
+```
+
+---
+
+### Insert 2
+
+- Root has space (max 3 keys).
+- Insert **2** into the root.
+
+```
+[1, 2]
+
+```
+
+---
+
+### Insert 3
+
+- Root still has space.
+- Insert **3**.
+
+```
+[1, 2, 3]
+
+```
+
+---
+
+### Insert 4
+
+- Root is full (3 keys).
+- Before inserting **4**, split root.
+- Middle key **2** moves up, becoming new root.
+- Left child: [1], Right child: [3].
+- Insert **4** into the correct child → goes to the right child.
+
+```
+    [2]
+   /   \
+[1]   [3,4]
+
+```
+
+---
+
+### Insert 5
+
+- Root [2] is not full.
+- Correct child for **5** is [3,4].
+- Insert into right child.
+
+```
+    [2]
+   /   \
+[1]   [3,4,5]
+
+```
+
+---
+
+### Insert 6
+
+- Right child [3,4,5] is full.
+- Split it: middle key **4** moves up to root.
+- Root becomes [2,4].
+- Left child: [1], middle child: [3], right child: [5].
+- Insert **6** into the correct child → goes to [5].
+
+```
+       [2,4]
+      /  |   \
+   [1] [3] [5,6]
+
+```
+
+---
+
+### Insert 7
+
+- Root [2,4] has space.
+- Correct child for **7** is [5,6].
+- Insert → [5,6,7].
+
+```
+       [2,4]
+      /  |     \
+   [1] [3] [5,6,7]
+
+```
+
+---
+
+### Insert 8
+
+- Right child [5,6,7] is full.
+- Split it: middle key **6** moves up to root.
+- Root becomes [2,4,6].
+- Children: [1], [3], [5], [7].
+- Insert **8** → goes into [7].
+
+```
+         [2,4,6]
+       /   |   |   \
+    [1]  [3] [5] [7,8]
+
+```
+
+---
+
+### Insert 9
+
+- Root [2,4,6] is full (3 keys).
+- Split root: middle key **4** becomes new root.
+- Left child: [2], right child: [6].
+- Distribute subtrees accordingly.
+- New root: [4]
+    - Left child [2] → children: [1], [3]
+    - Right child [6] → children: [5], [7,8]
+- Insert **9** → goes to [7,8].
+
+```
+          [4]
+        /     \
+     [2]       [6]
+    /   \     /   \
+ [1]   [3] [5]  [7,8,9]
+
+```
+
+---
+
+### Insert 10
+
+- Correct child for **10** is [7,8,9].
+- [7,8,9] is full.
+- Split it: middle key **8** moves up.
+- Right child [6] becomes [6,8].
+- Children: [5], [7], [9,10].
+
+Final structure:
+
+```
+          [4]
+        /     \
+     [2]       [6,8]
+    /   \     /  |   \
+ [1]   [3] [5] [7] [9,10]
+
+```
+
+---
+
+### Final B-Tree after inserting 1–10 (t=2)
+
+```
+          [4]
+        /     \
+     [2]       [6,8]
+    /   \     /  |   \
+ [1]   [3] [5] [7] [9,10]
+
+```
+
+- Root has 1 key ([4]).
+- Height of the tree = 2.
+- All leaf nodes are at the same depth, so it satisfies B-Tree properties.
+
+## B-Tree Deletion Walkthrough (F, M, G, D, B)
+
+This document explains, step-by-step, the deletions **F → M → G → D → B** in a B-tree of **minimum degree `t = 3`**, including **why** each change was required and which rule/case was applied.
+
+---
+
+### Quick Reference — What `t` means
+
+- `t` (minimum degree) controls node capacity:
+    - Keys per non-root node: **`t−1 .. 2t−1`** → here: **`2 .. 5`**.
+    - Children per internal node: **`t .. 2t`** → here: **`3 .. 6`**.
+- **Root** is special: it may have **fewer** than `t−1` keys (down to 1), and if it becomes empty during deletion, the tree height **shrinks by one**.
+- **Preemptive fix rule for deletion:** before descending to a child to delete, ensure that child has **≥ t keys**. If it has only **`t−1`** keys, **fix first** by borrowing or merging. This guarantees no underflow will occur after the recursive deletion.
+
+**Case names used below (CLRS style):**
+
+- **Case 1:** delete from a **leaf** (simple remove).
+- **Case 2a / 2b:** delete from an **internal** node by replacing with predecessor/successor from a child that has ≥ `t` keys.
+- **Case 2c:** if both adjacent children have only `t−1` keys, **merge** and continue deletion.
+- **Case 3a:** **borrow (rotate)** from sibling when the target child has `t−1` keys and a sibling has ≥ `t` keys.
+- **Case 3b:** if both siblings have `t−1` keys, **merge with a sibling** (may shrink height if at root).
+
+---
+
+### Initial Tree (before any deletions)
+
+```
+                              [ P ]
+                    /                      \
+              [ C   G   M ]                [ T   X ]
+            /     |      |   \            /    |    \
+        [A B]  [D E F] [J K L] [N O]   [Q R S] [U V] [Y Z]
+
+```
+
+- This is valid for `t = 3`:
+    - Every non-root node has **2..5** keys.
+    - Internal nodes have **3..4** children (within **3..6**).
+
+---
+
+### Step 1 — Delete **F** (Case 1: simple leaf delete)
+
+**Where?** In leaf `[D E F]`.
+
+**Action:** Remove `F` directly.
+
+```
+Before: [D E F]   →   After: [D E]
+
+```
+
+**Why allowed?** Leaf had 3 keys ≥ `t−1 = 2`; removing one leaves **2 keys**, still legal.
+
+**Tree (only the changed leaf shown):**
+
+```
+... [D E] ...
+
+```
+
+---
+
+### Step 2 — Delete **M** (Case 2a: delete from internal, replace with predecessor)
+
+**Where?** Internal node key `M` in `[C  G  M]`.
+
+**Action:** Replace `M` with its **predecessor** from the left child subtree of `M`.
+
+- Predecessor is the **max** key in the left child of `M`, which is `L` from `[J K L]`.
+- Because `[J K L]` has **3 ≥ t** keys, we can safely take `L`.
+
+**Operations:**
+
+1. In parent `[C G M]`, replace `M` with `L` → becomes `[C G L]`.
+2. In child `[J K L]`, remove `L` → becomes `[J K]`.
+
+**Resulting fragment:**
+
+```
+Parent: [C  G  L]
+Children around it: ... [D E]   [J K]   [N O]
+
+```
+
+**Why allowed?** Case 2a requires the chosen child to have ≥ `t` keys; here `[J K L]` had 3, so replacement + removal doesn’t underflow it.
+
+---
+
+### Step 3 — Delete **G** (Case 2c: both adjacent children minimal → merge, then delete)
+
+**Where?** Internal node key `G` in `[C  G  L]`.
+
+**Observation:** The two children adjacent to `G` are `[D E]` and `[J K]`, each with **2 = t−1** keys (minimum). Since neither child has ≥ `t` keys, we **cannot borrow**.
+
+**Action (Case 2c):**
+
+- **Merge** left child + key `G` + right child → `[D E G J K]`.
+- Remove `G` **inside that merged node** (now it’s a leaf), yielding `[D E J K]`.
+- Parent loses `G` and its two children become one merged child.
+
+**Before / After (around the left subtree):**
+
+```
+Before parent: [C  G  L]          After parent: [C  L]
+Children:  [A B] [D E] [J K] [N O]    →   [A B] [D E J K] [N O]
+
+```
+
+**Full tree snapshot after Step 3:**
+
+```
+                              [ P ]
+                    /                      \
+                 [ C   L ]                [ T   X ]
+               /    |    \               /    |    \
+            [A B] [D E J K] [N O]    [Q R S] [U V] [Y Z]
+
+```
+
+**Why allowed?** Case 2c explicitly merges when both adjacent children are at minimum (`t−1`). This keeps all nodes within 2..5 keys, and the tree remains valid.
+
+---
+
+### Step 4 — Delete **D** (Requires Case 3b at the root, then Case 1 in leaf)
+
+We want to delete `D` from `[D E J K]`.
+
+**Preemptive fix check at the root:** We are about to descend from the root `[P]` to its left child `[C L]`. That child has **2 = t−1** keys, and its right sibling `[T X]` also has **2 = t−1** keys. With both siblings minimal, we **cannot borrow**; per **Case 3b** we must **merge across the root**.
+
+**Case 3b action (root merge):**
+
+- Merge left child + root key `P` + right child → new root `[C L P T X]`.
+- The tree height **shrinks by one**.
+
+**After the root merge (before deleting D):**
+
+```
+                     [ C  L  P  T  X ]
+                 /      |      |     |     \
+              [A B]  [D E J K] [N O] [Q R S] [U V] [Y Z]
+
+```
+
+**Now delete `D` (Case 1 in leaf):**
+
+- In leaf `[D E J K]`, remove `D` → `[E J K]`.
+
+**Snapshot after Step 4:**
+
+```
+                     [ C  L  P  T  X ]
+                 /      |      |     |     \
+              [A B]  [E J K] [N O] [Q R S] [U V] [Y Z]
+
+```
+
+**Why allowed?** Preemptive fix (Case 3b) ensured we would not underflow on the path to the target. The actual deletion then happened in a leaf with ≥ `t−1` keys.
+
+---
+
+### Step 5 — Delete **B** (Case 3a: borrow/rotate from right sibling, then delete)
+
+Target is in the **leftmost leaf** `[A B]`, which currently has **2 = t−1** keys (minimum). Direct deletion would underflow, so we must **fix before deletion**.
+
+**Check siblings:** Right sibling `[E J K]` has **3 ≥ t** keys → we can **borrow**.
+
+**Case 3a action (borrow/rotation):**
+
+1. Move parent separator (`C`) **down** to the underfull child.
+2. Move the sibling’s smallest key (`E`) **up** to the parent (replacing `C`).
+
+**Local transformation:**
+
+```
+Parent: [ C  L  P  T  X ]  →  [ E  L  P  T  X ]
+Left leaf:  [A B]        →  [A B C]
+Right leaf: [E J K]      →  [J K]
+
+```
+
+**Now delete `B` from `[A B C]` (leaf, Case 1):**
+
+```
+[A B C] → [A C]
+
+```
+
+**Final snapshot after Step 5:**
+
+```
+                     [ E  L  P  T  X ]
+                 /      |      |     |     \
+              [A C]   [J K]  [N O] [Q R S] [U V] [Y Z]
+
+```
+
+**Why allowed?** Borrowing (Case 3a) is permitted because the sibling had ≥ `t` keys. After rotation, the target leaf had 3 keys; deleting `B` leaves 2 keys, which is valid.
+
+---
+
+### Invariant Checks (after each step)
+
+- **Node key counts:** All non-root nodes always remained within **2..5** keys.
+- **Root:** Temporarily had 1 key earlier and later expanded/merged as allowed; when merged in Step 4, it legally contained **5** keys and the height reduced by one.
+- **Leaf depth:** All leaves remained at the **same depth** throughout.
+- **Ordering:** Inorder key order is preserved after each rotation/merge.
+
+---
+
+### Takeaways
+
+1. With `t = 3`, the legal key range per non-root node is **2..5**; children per internal node is **3..6**.
+2. **Preemptive fixing** (borrow/merge) happens **before** descending into a child that has only `t−1` keys.
+3. **Deleting from an internal node** uses predecessor/successor replacements **only** if the chosen child has ≥ `t` keys; otherwise **merge** and continue.
+4. When both sides are minimal at the **root**, merging can **shrink the tree height**.
+
+---
+
+### Glossary of cases used
+
+- **Case 1:** Delete directly from a leaf.
+- **Case 2a:** Delete internal key; replace with predecessor from left child (which must have ≥ `t` keys), then delete predecessor from that child.
+- **Case 2c:** If both adjacent children have `t−1` keys, **merge** them with the separator key and continue deletion in the merged node.
+- **Case 3a:** **Borrow** from a sibling that has ≥ `t` keys; rotate via the parent.
+- **Case 3b:** If target child and its siblings all have `t−1` keys, **merge** with a sibling (at root this can reduce height).
+
+---
