@@ -6,6 +6,7 @@ Index for this page :
 - Red Black Trees
 - 2-3 Trees
 - B-Tree
+- Splay Trees
 
 
 ---
@@ -1221,3 +1222,203 @@ Right leaf: [E J K]      →  [J K]
 - **Case 3b:** If target child and its siblings all have `t−1` keys, **merge** with a sibling (at root this can reduce height).
 
 ---
+---
+---
+
+## Splay Trees
+
+---
+
+###  What is a Splay Tree?
+
+A **Splay Tree** is a self-adjusting binary search tree where every time a node is accessed (via **search, insertion, or deletion**), it is moved to the root using tree rotations. This operation is called **splaying**.
+
+- The main idea is to keep **recently accessed nodes near the root**, making repeated access to the same elements faster.
+- Splay trees do not maintain strict balance like AVL or Red-Black Trees, but they provide **amortized O(log n)** time complexity for operations.
+
+**Key Properties:**
+
+- Binary Search Tree (BST) property is always maintained.
+- After every operation, the accessed node becomes the root.
+- Rotations are performed in one of three patterns: **Zig, Zig-Zig, Zig-Zag**.
+
+---
+
+###  Difference Between AVL and Splay Tree
+
+| Feature | AVL Tree | Splay Tree |
+| --- | --- | --- |
+| **Balance** | Strict balance (height diff ≤ 1) | No strict balance, just self-adjusts |
+| **Search Time** | Always `O(log n)` (worst case) | Amortized `O(log n)`, worst `O(n)` |
+| **Insert/Delete** | May need rebalancing rotations | Always splay (rotations every time) |
+| **Rotations** | Only when imbalance occurs | On **every operation** |
+| **Access Pattern** | Uniform → all searches are equal | Biased → recently/frequently used nodes are faster |
+| **Use Case** | Databases, where worst-case must be fast | Caches, memory where recent items are accessed repeatedly |
+- **AVL** = Strictly balanced, guaranteed `O(log n)`.
+- **Splay** = Adapts to usage, faster for repeated access, amortized `O(log n)`.
+
+---
+
+### Splay Operations (Scenarios)
+
+When splaying a node, there are three cases depending on the position of the node, its parent, and grandparent.
+
+### 1. **Zig (Single Rotation)**
+
+- **Which node is splayed?** The child of the root (**x**).
+- **When it happens:** `x` is a direct child of the root `r`.
+- **Action:** Perform a **single rotation** to make `x` the root.
+
+**Left Zig (x is left child of root):**
+
+```
+Before (splay x):
+        r
+       / \
+      x   C
+     / \
+    A   B
+
+After (right-rotate at r):
+        x
+       / \
+      A   r
+         / \
+        B   C
+
+```
+
+**Right Zig (x is right child of root):**
+
+```
+Before (splay x):
+        r
+       / \
+      C   x
+         / \
+        B   A
+
+After (left-rotate at r):
+        x
+       / \
+      r   A
+     / \
+    C   B
+
+```
+
+---
+
+### 2. **Zig-Zig (Double Rotation – Same Side)**
+
+- **Which node is splayed?** The grandchild **x** that is on the **same side** as its parent `p` relative to grandparent `g` (LL or RR).
+- **When it happens:** `x` and `p` are both **left children** (LL) or both **right children** (RR).
+- **Action:** Rotate **g** first, then rotate **p** — both in the **same direction** — bringing `x` above `g`.
+
+**Left–Left Zig-Zig (LL):**
+
+```
+Before (splay x):
+          g
+         / \
+        p   D
+       / \
+      x   C
+     / \
+    A   B
+
+Steps:
+1) Right-rotate at g, 2) Right-rotate at p
+
+After:
+          x
+         / \
+        A   p
+           / \
+          B   g
+             / \
+            C   D
+
+```
+
+**Right–Right Zig-Zig (RR):**
+
+```
+Before (splay x):
+      g
+     / \
+    A   p
+       / \
+      C   x
+         / \
+        D   B
+
+Steps:
+1) Left-rotate at g, 2) Left-rotate at p
+
+After:
+          x
+         / \
+        g   B
+       / \
+      A   p
+         / \
+        C   D
+
+```
+
+---
+
+### 3. **Zig-Zag (Double Rotation – Opposite Sides)**
+
+- **Which node is splayed?** The grandchild **x** that is on the **opposite side** of its parent `p` relative to the grandparent `g` (LR or RL).
+- **When it happens:** `x` is a **right child** of a **left parent** (LR) or a **left child** of a **right parent** (RL).
+- **Action:** Rotate **p** first (toward `x`), then rotate **g** (toward `x`) — rotations are in **opposite directions**.
+
+**Left–Right Zig-Zag (LR):**
+
+```
+Before (splay x):
+          g
+         / \
+        p   D
+       / \
+      A   x
+         / \
+        B   C
+
+Steps:
+1) Left-rotate at p, 2) Right-rotate at g
+
+After:
+          x
+         / \
+        p   g
+       / \ / \
+      A  B C  D
+
+```
+
+**Right–Left Zig-Zag (RL):**
+
+```
+Before (splay x):
+      g
+     / \
+    A   p
+       / \
+      x   D
+     / \
+    B   C
+
+Steps:
+1) Right-rotate at p, 2) Left-rotate at g
+
+After:
+          x
+         / \
+        g   p
+       / \ / \
+      A  B C  D
+
+```
