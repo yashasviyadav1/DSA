@@ -74,6 +74,10 @@ For pattern `MALXA`:
 
 **Bad Character Rule:** When a mismatch occurs at pattern[j] with text[i], we can shift the pattern so that the rightmost occurrence of text[i] in the pattern aligns with text[i].
 
+in below eg. A != G (so A is bad character) so search for rightmost occurance of A in pattern (ignoring last index), another occurance is found at index 1 (in pattern), index of bad char is 3 (in text) so shift -> 3 - 1 = 2 steps to right 
+<img width="1000" height="504" alt="image" src="https://github.com/user-attachments/assets/7341451a-ccd6-4236-8d37-6829a7379ff7" />
+
+
 ### *Step 2: Good Suffix Table Computation (Complete Implementation)*
 
 The good suffix table has ***TWO rules:***
