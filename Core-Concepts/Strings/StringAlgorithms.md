@@ -94,12 +94,24 @@ in below eg. A != G (so A is bad character) so search for rightmost occurance of
 
 The good suffix table has ***TWO rules:***
 
-note :  good suffix is the suffix of the text which is common in both text and string as suffix. eg. AB is common in both the Text and Pattern window (green)
+
+<b>What is a "good suffix"?</b>
+
+> When we match some characters from the right but then mismatch, the matched part is called a "good suffix". We want to find how far we can shift the pattern so that:
+
+*Very important :-*
+> Case 1: The good suffix aligns with another occurrence of the same <b>*substring*</b> in the pattern, OR Case 2: 
+> The good suffix aligns with a prefix of the pattern
+
+*Explanation :-*
+> CASE 1 Explained : note that i wrote 'substring' in the above sentence and not prefix which means if we have good suffix = "ABC" from text = "HFKAJS[ABC]" and pattern = "CDABC[ABC]" now this good suffix is ABC from the text, now we search for a substring ABC present somewhere in the pattern we found it in the pattern at index 2 to 4 at CD(ABC)ABC so we shift the pattern to its right by = 3 steps 
+ 
+> Case 2 Explained : now we have good string "ABC" from the text = HFKAJS[ABC] and pattern = BCL[ABC] now in this case case 1 failed because we could not find good suffix abc in any other position in the pattern so rather then searching for substring abc in pattern, now we will search for any other suffix of ABC (suffixes : ABC, BC, C) that is present as prefix of our pattern (prefixes : B, BC, BCL, ....etc)  now since BC sufix of good sufix matches with BC prefix of pattern so we will align them so move by  3 steps 
 
 ```java
-Rule 1: Find the rightmost occurrence of the suffix elsewhere in the pattern
-				-> once found that align this new occurrence of the suffix present in text with the suffix of the pattern (basically shifting)
-				-> eg. in the below image good suffix T[3,4] = AB is found again in the pattern at P[1,2] = AB so we will align this new Ab
+Rule 1: Find the rightmost occurrence of the suffix elsewhere as substring in the pattern
+				-> once found that align this new occurrence of the suffix present in text with this substring of the pattern (basically shifting)
+				-> eg. in the below image good suffix T[3,4] = AB is found again in the pattern as substring at : Pattern[1,2] = AB so we will align this new Ab
 					 with the text by shifting 2 positions to right (because in text suffix AB start at index 3 and in pattern suffix AB start at
 					 index 1 so shift = 3 - 1 => 2 steps
 ```
@@ -123,9 +135,9 @@ Rule 2: If Rule 1 fails, find the longest prefix of the pattern that matches a s
 
 so we shift it to align it 
 
-For pattern `MALXA`:
 
-**Detailed Good Suffix Analysis:**
+### Now For pattern `MALXA`:
+**Detailed Good Suffix Table Computing Analysis:**
 
 **Position 4 (j=4):** Suffix = "" (empty)
 
@@ -277,12 +289,191 @@ The algorithm's power comes from:
 
 In our example, instead of checking every position (naive approach would need 13 comparisons), Boyer-Moore eliminated large chunks of text with just 2 mismatches, demonstrating its efficiency especially for longer patterns and texts.
 
+### ⭐ Full Dry Run with example for Boyer-Moore Algorithm
+
+**Problem Setup**
+- **Text (T)**: HEXALXAIMALXAMEHE (length = 17)
+- **Pattern (P)**: MALXA (length = 5)
+
+Position indices:
+```
+Text:    H E X A L X A I M A L X A M A H E
+Index:   0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+
+Pattern: M A L X A
+Index:   0 1 2 3 4
+```
+
+## Preprocessing Phase
+
+### 1. Bad Character Heuristic Table
+
+For each character in the alphabet, we find the rightmost occurrence in the pattern (excluding the last position for shifts).
+
+**Pattern analysis**: M A L X A (indices 0,1,2,3,4)
+- M: rightmost at index 0
+- A: rightmost at index 1 (we have A at indices 1,4 but exclude last position 4)
+- L: rightmost at index 2  
+- X: rightmost at index 3
+- Other characters: not present (-1)
+
+**Bad Character Table**:
+```
+Character | Rightmost Index in Pattern
+---------|-------------------------
+M        | 0
+A        | 1  
+L        | 2
+X        | 3
+Others   | -1
+```
+
+**Bad Character Shift Formula**: 
+shift = max(1, j - badChar[T[i+j]])
+where j is the position of mismatch in pattern, T[i+j] is the mismatched character in text.
+
+### 2. Good Suffix Heuristic Table
+
+The good suffix heuristic handles cases where we've matched some suffix of the pattern but then hit a mismatch. Let me explain this step by step for pattern MALXA.
+
+**What is a "good suffix"?**
+When we match some characters from the right but then mismatch, the matched part is called a "good suffix". We want to find how far we can shift the pattern so that:
+1. The good suffix aligns with another occurrence of the same substring in the pattern, OR
+2. The good suffix aligns with a prefix of the pattern
+
+**Step-by-step computation for MALXA:**
+
+**Position 0**: No suffix matched yet (empty suffix "")
+- When no characters are matched, we look for the longest prefix that appears elsewhere in the pattern
+- For pattern MALXA: Does any prefix ("M", "MA", "MAL", "MALX") appear as a suffix?
+  - "M" appears at position 0 only (not as suffix)
+  - "MA" doesn't appear as suffix  
+  - "MAL" doesn't appear as suffix
+  - "MALX" doesn't appear as suffix
+- Since no prefix appears elsewhere as a suffix, shift = 1 (minimal safe shift)
+
+**Position 1**: Suffix "A" was matched, then mismatch at position 3
+- Look for "A" elsewhere in pattern MALXA: A appears at position 1
+- To align suffix "A" with the A at position 1: shift = 4 - 1 = 3
+- Check if "A" matches as prefix: A ≠ M (first char), so no prefix match
+- Shift = 3
+
+**Position 2**: Suffix "XA" was matched, then mismatch at position 2  
+- Look for "XA" elsewhere in pattern MALXA: "XA" doesn't appear elsewhere
+- Check if any suffix of "XA" matches a prefix:
+  - "A" vs prefix "M": no match
+  - "XA" vs prefix "MA": no match
+- Shift = pattern length = 5
+
+**Position 3**: Suffix "LXA" was matched, then mismatch at position 1
+- Look for "LXA" elsewhere in pattern: doesn't exist
+- Check prefixes: no suffix of "LXA" matches prefix "M" or "MA"
+- Shift = pattern length = 5
+
+**Position 4**: Suffix "ALXA" was matched, then mismatch at position 0
+- Look for "ALXA" elsewhere: doesn't exist  
+- Check prefixes: no suffix of "ALXA" matches any prefix
+- Shift = pattern length = 5
+
+**Final Good Suffix Table**:
+```
+Mismatch at Position | Matched Suffix | Good Suffix Shift
+--------------------|----------------|------------------
+0                   | ""             | 1
+1                   | "A"            | 3  
+2                   | "XA"           | 5
+3                   | "LXA"          | 5
+4                   | "ALXA"         | 5
+```
+
+**Intuition**: The good suffix table tells us how far to shift when we've matched some characters from the right but then hit a mismatch. The goal is to avoid redundant comparisons by ensuring the matched part (good suffix) aligns with a compatible position in the pattern.
+
+### Matching Phase - Dry Run
+
+**Alignment 1: Text position 0**
+```
+Text:    H E X A L X A I M A L X A M A H E
+Pattern: M A L X A
+         ↑
+```
+Compare from right to left (pattern index 4 to 0):
+- T[4] = L vs P[4] = A → **MISMATCH** (immediate mismatch, no suffix matched)
+- Bad character shift for 'L': max(1, 4 - 2) = max(1, 2) = 2
+- Good suffix shift: 1 (empty good suffix)
+- **Shift = max(2, 1) = 2** (bad character heuristic dominates)
+
+**Alignment 2: Text position 2**
+```
+Text:    H E X A L X A I M A L X A M A H E
+Pattern:     M A L X A
+             ↑
+```
+Compare from right to left:
+- T[6] = A vs P[4] = A → **MATCH**
+- T[5] = X vs P[3] = X → **MATCH** 
+- T[4] = L vs P[2] = L → **MATCH**
+- T[3] = A vs P[1] = A → **MATCH**
+- T[2] = X vs P[0] = M → **MISMATCH**
+- Good suffix "ALXA" was matched, then mismatch at position 0
+- Bad character shift for 'X': max(1, 0 - 3) = max(1, -3) = 1
+- Good suffix shift: goodSuffix[1] = 5 (suffix "ALXA" doesn't appear elsewhere)
+- **Shift = max(1, 5) = 5**
+
+**Alignment 3: Text position 7**
+```
+Text:    H E X A L X A I M A L X A M A H E
+Pattern:               M A L X A
+                       ↑
+```
+Compare from right to left:
+- T[11] = X vs P[4] = A → **MISMATCH** (immediate mismatch, no suffix matched)
+- Bad character shift for 'X': max(1, 4 - 3) = max(1, 1) = 1
+- Good suffix shift: 1 (empty good suffix)
+- **Shift = max(1, 1) = 1**
+
+**Alignment 4: Text position 8**
+```
+Text:    H E X A L X A I M A L X A M A H E
+Pattern:                 M A L X A
+                         ↑
+```
+Compare from right to left:
+- T[12] = A vs P[4] = A → **MATCH**
+- T[11] = X vs P[3] = X → **MATCH**
+- T[10] = L vs P[2] = L → **MATCH**
+- T[9] = A vs P[1] = A → **MATCH**
+- T[8] = M vs P[0] = M → **MATCH**
+- **COMPLETE MATCH FOUND at position 8!**
+
+### Results
+
+**Pattern FOUND** at position 8 in the text!
+
+```
+Text:    H E X A L X A I M A L X A M A H E
+                         M A L X A
+                         ↑ match found here
+```
+
+### Summary of Shifts
+1. Position 0 → Position 2 (shift of 2) - Bad character heuristic only
+2. Position 2 → Position 7 (shift of 5) - Good suffix heuristic dominates
+3. Position 7 → Position 8 (shift of 1) - Bad character heuristic only  
+4. Position 8 → **MATCH FOUND**
+
+Total comparisons made: 11 character comparisons
+Total shifts: 3 shifts
+
+The Boyer-Moore algorithm successfully found the pattern using a combination of bad character and good suffix heuristics, making fewer comparisons than a naive approach.
+
 Key Points:
 
 - Always compare from right to left within each alignment
 - Take the maximum of bad character and good suffix shifts
 - Bad character shift can be negative (when character appears to the right), so we use max(1, bad_char_shift)
 - The algorithm excels when the alphabet is large and pattern is long
+
+
 
 ---
 ---
