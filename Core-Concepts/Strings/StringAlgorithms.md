@@ -1,6 +1,14 @@
-- Bruteforce pattenr searching
-- Boyer Moree Algorithm
 
+# **String Algorithms**:- 
+
+For Pattern Searching :
+- Bruteforce pattenr searching
+- Boyer Moree Algorithm (BM)
+- Knuth-Morris-Pratt Algo  (KMP)
+
+---
+---
+---
 ## **Bruteforce pattern searching**
 
 takes n*m time where n is length of text and m is length of pattern
@@ -23,6 +31,10 @@ public int strStr(String haystack, String needle) {
 }
 
 ```
+
+---
+---
+---
 
 ## **Boyer Moree Algorithm**
 
@@ -271,3 +283,286 @@ Key Points:
 - Take the maximum of bad character and good suffix shifts
 - Bad character shift can be negative (when character appears to the right), so we use max(1, bad_char_shift)
 - The algorithm excels when the alphabet is large and pattern is long
+
+---
+---
+---
+
+
+
+## **Knuth Morris Pratt (KMP) Algorithm**
+
+We want to find all occurrences of a pattern `P` (length *m*) inside a text `T` (length *n*).
+
+The simplest approach is **brute force pattern matching**:
+
+- Start aligning pattern at every position in text.
+- Compare characters one by one until either mismatch or full match.
+- Worst-case: **O(n·m)** (e.g., text = `aaaaaaa…`, pattern = `aaaab`).
+
+This is too slow for large inputs.
+
+**Trade-off that KMP Overcomes**
+
+KMP was designed to **eliminate unnecessary re-checking of characters**.
+
+- In brute force, if a mismatch happens, you might restart matching from the next character in text, even though some prefix of the pattern was already matched (wasted effort).
+- KMP avoids this waste by remembering how much of the pattern has already matched using a **failure function (LPS = Longest Prefix Suffix array)**.
+
+So the **trade-off** is:
+
+- Extra preprocessing time **O(m)** and memory **O(m)** for building the LPS array.
+- But searching becomes **O(n)** instead of **O(n·m)**.
+
+Essentially, KMP trades **preprocessing cost** for **faster searching**.
+
+### What is LPS (Longest prefix suffix) ?
+
+For each position `i` in the pattern, **LPS[i]** = length of the **longest proper prefix** of `pattern[0..i]` which is also a suffix of `pattern[0..i]`.
+
+- **Prefix**: substring that starts from the beginning.
+- **Suffix**: substring that ends at the end.
+- **Proper** means we don’t take the whole string itself.
+
+LPS tells us: *“If a mismatch happens at position i, how far back can we shift while reusing already matched characters?”*
+
+---
+
+### Algorithm to Build LPS
+
+We maintain:
+
+- `len` = length of the longest prefix-suffix found so far.
+- `i` = current index in the pattern.
+
+Steps:
+
+1. Start with `LPS[0] = 0` (a single char has no proper prefix/suffix).
+2. For each `i` from 1 to m-1:
+    - If `pattern[i] == pattern[len]` → extend current prefix → `len++`, set `LPS[i] = len`.
+    - Else:
+        - If `len > 0` → shrink length → `len = LPS[len-1]` (try shorter prefix).
+        - If `len == 0` → no match → `LPS[i] = 0`.
+
+---
+
+## 🔹 Example Walkthrough
+
+Pattern = `A B A B C A B A B`
+
+Initialize:
+
+- LPS[0] = 0
+- `len = 0`, `i = 1`
+
+---
+
+### Step-by-step:
+
+1. **i=1, P[1]=B, P[len=0]=A** → mismatch, len=0 → LPS[1]=0
+2. **i=2, P[2]=A, P[len=0]=A** → match → len=1 → LPS[2]=1
+3. **i=3, P[3]=B, P[len=1]=B** → match → len=2 → LPS[3]=2
+4. **i=4, P[4]=C, P[len=2]=A** → mismatch
+    - len>0 → len=LPS[len-1]=LPS[1]=0
+    - now len=0, mismatch again → LPS[4]=0
+5. **i=5, P[5]=A, P[len=0]=A** → match → len=1 → LPS[5]=1
+6. **i=6, P[6]=B, P[len=1]=B** → match → len=2 → LPS[6]=2
+7. **i=7, P[7]=A, P[len=2]=A** → match → len=3 → LPS[7]=3
+8. **i=8, P[8]=B, P[len=3]=B** → match → len=4 → LPS[8]=4
+
+Final LPS = `[0, 0, 1, 2, 0, 1, 2, 3, 4]`
+
+### Idea Behind KMP
+
+The key observation:
+
+When a mismatch occurs at `pattern[j]`, we don’t need to start from scratch.
+
+- Some prefix of the pattern has already matched the suffix of what we’ve just seen.
+- Use the **LPS array** (longest proper prefix that is also a suffix) to decide where to continue in the pattern, without rechecking characters in text.
+
+Example:
+
+Text = `ABABABC`
+
+Pattern = `ABABC`
+
+While matching, if mismatch occurs after matching `ABAB`, KMP says:
+
+➡️ “You don’t need to restart from beginning; you already know the first two chars match, so shift pattern intelligently.”
+
+***Question*** [IMP] - when 2 chars mismatch, why do we shift 1 some steps back ? Should’t we just place the leftmost pointer to the 0th index when there is mismatch ?
+
+Answer : Why simply setting `len=0` is wrong? If you do `len=0` directly, you are **throwing away useful information** about possible shorter prefix-suffixes.
+
+The `lps[len-1]` step says: 
+
+> “Okay, the prefix of length `len` didn’t work, but maybe a shorter prefix (captured in `lps[len-1]`) still works.”
+> 
+
+This recursive fallback is what finds *all* valid prefix-suffix lengths.
+
+If you just zero it, you’ll miss these cases.
+
+computing the LPS - longest prefix suffix table for KMP
+
+Counterexample (where your method fails) : 
+
+Take pattern:
+
+```
+P = AAACAAAA
+```
+
+We’ll compute LPS manually.
+
+---
+
+### Using Correct Method (with fallback `len = lps[len-1]`)
+
+1. i=0 → lps[0]=0
+2. i=1 (`A==A`) → lps[1]=1, len=1
+3. i=2 (`A==A`) → lps[2]=2, len=2
+4. i=3 (`C != A`):
+    - mismatch, len=2 → fallback `len=lps[1]=1`
+    - still mismatch (`C != A`), fallback again `len=lps[0]=0`
+    - finally lps[3]=0
+
+... continue → at the end we get:
+
+LPS = `[0,1,2,0,1,2,3,4]`
+
+---
+
+### Using Your Method (direct `len=0` on mismatch)
+
+At i=3 (`C != A`), you’d **immediately reset len=0** without fallback.
+
+Now when continuing further, you’d lose the information about overlapping `"AAA"` at the end.
+
+You’d eventually compute:
+
+LPS (wrong) = `[0,1,2,0,1,0,1,0]`
+
+Notice the last entries are **all wrong**.
+
+---
+
+Why this matters ? 
+
+Later, in the **search phase**, the wrong LPS will cause you to restart from scratch too often → O(n·m) instead of O(n+m).
+
+In our example:
+
+- Correct LPS says `"AAAA"` is both prefix and suffix.
+- Wrong LPS (with len=0) says “nah, nothing matches”, so you throw away the `"AAAA"` info.
+
+That’s exactly the efficiency loss.
+
+---
+
+### Dry Run KMP with example :-
+
+**Step 1: Compute the LPS table** for Pattern `P = ABABCABAB`
+
+We build LPS (longest prefix which is also a suffix).
+
+Pattern:
+
+```
+Index:   0 1 2 3 4 5 6 7 8
+Char:    A B A B C A B A B
+```
+
+We initialize:
+
+- `lps[0] = 0` always
+- Variables: `len = 0`, `i = 1`
+
+Now compute:
+
+1. `i=1, P[1]=B, P[len=0]=A` → mismatch → `lps[1]=0`, `i=2`
+2. `i=2, P[2]=A, P[len=0]=A` → match → `len=1`, `lps[2]=1`, `i=3`
+3. `i=3, P[3]=B, P[len=1]=B` → match → `len=2`, `lps[3]=2`, `i=4`
+4. `i=4, P[4]=C, P[len=2]=A` → mismatch → fallback `len=lps[1]=0` → mismatch again → `lps[4]=0`, `i=5`
+5. `i=5, P[5]=A, P[len=0]=A` → match → `len=1`, `lps[5]=1`, `i=6`
+6. `i=6, P[6]=B, P[len=1]=B` → match → `len=2`, `lps[6]=2`, `i=7`
+7. `i=7, P[7]=A, P[len=2]=A` → match → `len=3`, `lps[7]=3`, `i=8`
+8. `i=8, P[8]=B, P[len=3]=B` → match → `len=4`, `lps[8]=4`, `i=9` (done)
+
+✅ LPS Table:
+
+```
+Index:   0 1 2 3 4 5 6 7 8
+Char:    A B A B C A B A B
+LPS:     0 0 1 2 0 1 2 3 4
+```
+
+---
+
+**Step 2: KMP Search**
+
+Text `T = ABABDABACDABABCABAB` (length 19)
+
+Pattern `P = ABABCABAB` (length 9)
+
+We maintain:
+
+- `i` → index in Text
+- `j` → index in Pattern
+
+---
+
+**Iteration dry run**
+
+1. `i=0, j=0`: `T[0]=A`, `P[0]=A` → match → `i=1, j=1`
+2. `i=1, j=1`: `T[1]=B`, `P[1]=B` → match → `i=2, j=2`
+3. `i=2, j=2`: `T[2]=A`, `P[2]=A` → match → `i=3, j=3`
+4. `i=3, j=3`: `T[3]=B`, `P[3]=B` → match → `i=4, j=4`
+5. `i=4, j=4`: `T[4]=D`, `P[4]=C` → mismatch → fallback → `j=lps[3]=2` (don’t move `i`)
+6. `i=4, j=2`: `T[4]=D`, `P[2]=A` → mismatch → fallback → `j=lps[1]=0`
+7. `i=4, j=0`: mismatch → move `i=5`
+8. `i=5, j=0`: `T[5]=A`, `P[0]=A` → match → `i=6, j=1`
+9. `i=6, j=1`: `T[6]=B`, `P[1]=B` → match → `i=7, j=2`
+10. `i=7, j=2`: `T[7]=A`, `P[2]=A` → match → `i=8, j=3`
+11. `i=8, j=3`: `T[8]=C`, `P[3]=B` → mismatch → fallback `j=lps[2]=1`
+12. `i=8, j=1`: `T[8]=C`, `P[1]=B` → mismatch → fallback `j=lps[0]=0`
+13. `i=8, j=0`: mismatch → move `i=9`
+14. `i=9, j=0`: `T[9]=D`, `P[0]=A` → mismatch → move `i=10`
+15. `i=10, j=0`: `T[10]=A`, `P[0]=A` → match → `i=11, j=1`
+16. `i=11, j=1`: `T[11]=B`, `P[1]=B` → match → `i=12, j=2`
+17. `i=12, j=2`: `T[12]=A`, `P[2]=A` → match → `i=13, j=3`
+18. `i=13, j=3`: `T[13]=B`, `P[3]=B` → match → `i=14, j=4`
+19. `i=14, j=4`: `T[14]=C`, `P[4]=C` → match → `i=15, j=5`
+20. `i=15, j=5`: `T[15]=A`, `P[5]=A` → match → `i=16, j=6`
+21. `i=16, j=6`: `T[16]=B`, `P[6]=B` → match → `i=17, j=7`
+22. `i=17, j=7`: `T[17]=A`, `P[7]=A` → match → `i=18, j=8`
+23. `i=18, j=8`: `T[18]=B`, `P[8]=B` → match → `i=19, j=9`
+
+`j == 9` → Pattern found at `i - j = 19 - 9 = 10`
+
+**Final Answer**
+
+Pattern `P = ABABCABAB` is found in Text `T` at ***index 10**.*
+
+**Final Answer**:
+
+- LPS table computation = **14 iterations**
+- Pattern searching = **22 comparisons**
+- **Total iterations ≈ 36**
+
+This shows the efficiency: instead of 171 brute-force steps, *KMP solved it in 36 steps.* (text.len = 19, pattern.len = 9 almost took n+m time)
+
+### Time comparision of Boyer Moore and KMP
+
+**KMP - Knuth Morris Pratt Algo**
+
+- **Worst-case time complexity:** `O(n+m)`
+    - Builds LPS in O(m)O(m)O(m), then scans text in O(n)O(n)O(n).
+- **Best-case time complexity:** `(n+m)`
+- **Key point:** KMP is *deterministic*. It **guarantees** linear time in all cases (good for adversarial inputs).
+
+**(BM) - Boyer–Moore**
+
+- **Worst-case time complexity: `O(n*m)`** if pattern and text are repetitive
+- **Best-case time complexity: `O(n/m)`** (almost sub-linear in practice).
