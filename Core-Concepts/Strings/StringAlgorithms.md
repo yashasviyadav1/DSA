@@ -6,6 +6,9 @@ For Pattern Searching :
 - Boyer Moree Algorithm (BM)
 - Knuth-Morris-Pratt Algo  (KMP)
 
+For String/Data Compression :- 
+- Huffman coding Algorithm (encoding and decoding)
+
 ---
 ---
 ---
@@ -757,3 +760,225 @@ This shows the efficiency: instead of 171 brute-force steps, *KMP solved it in 3
 
 - **Worst-case time complexity: `O(n*m)`** if pattern and text are repetitive
 - **Best-case time complexity: `O(n/m)`** (almost sub-linear in practice).
+
+---
+---
+---
+
+## **Huffman Coding Algorithm - String Compression**
+
+***What is Huffman Coding?***
+
+- Huffman Coding is a **lossless data compression algorithm**.
+- It assigns **shorter codes to frequent characters** and **longer codes to less frequent characters**.
+- Based on a **binary tree (Huffman Tree)**.
+- It minimizes the **total number of bits** required to represent data.
+
+***Steps of Huffman Coding***
+
+1. **Frequency Calculation**
+    
+    Count the frequency of each character in the input string.
+    
+2. **Priority Queue (Min-Heap)**
+    
+    Create a priority queue (min-heap) of nodes, where each node stores:
+    
+    - character
+    - frequency
+    - left child
+    - right child
+3. **Build Huffman Tree**
+    - Extract two nodes with the smallest frequency.
+    - Create a new node with frequency = sum of the two nodes.
+    - Insert this new node back into the priority queue.
+    - Repeat until only one node remains (this becomes the root).
+4. **Generate Huffman Codes**
+    
+    Traverse the tree:
+    
+    - Assign `0` when moving left
+    - Assign `1` when moving right
+        
+        Collect codes for all characters.
+        
+5. **Encoding**
+    
+    Replace each character in the input string with its corresponding Huffman code.
+    
+6. **Decoding**
+    
+    Use the Huffman tree to decode the bit string back to original text.
+    
+
+***Example String:***
+
+```
+ABRACADABRA
+```
+
+---
+
+***Step 1: Frequency Count***
+
+| Character | Frequency |
+| --- | --- |
+| A | 5 |
+| B | 2 |
+| R | 2 |
+| C | 1 |
+| D | 1 |
+
+---
+
+***Step 2: Create Priority Queue (Min-Heap)***
+
+We push each character as a leaf node with its frequency:
+
+```
+(C,1), (D,1), (B,2), (R,2), (A,5)
+```
+
+---
+
+***Step 3: Build Huffman Tree***
+
+note: while merging 2 nodes `A` and `B` we can insert any random char as value eg. `\0`  with freq as sum of 2 poped nodes, and this new node will have left child as `A` and right as `B` 
+
+1. Extract 2 smallest → `(C,1)` & `(D,1)` → merge → new node `(CD,2)`
+    
+    Heap: `(CD,2), (B,2), (R,2), (A,5)`
+    
+2. Extract 2 smallest → `(B,2)` & `(R,2)` → merge → `(BR,4)`
+    
+    Heap: `(CD,2), (BR,4), (A,5)`
+    
+3. Extract 2 smallest → `(CD,2)` & `(BR,4)` → merge → `(CDBR,6)`
+    
+    Heap: `(CDBR,6), (A,5)`
+    
+4. Extract 2 smallest → `(A,5)` & `(CDBR,6)` → merge → `(Root,11)`
+    
+    Heap: `(Root,11)`
+    
+
+---
+
+***Step 4: Assign Huffman Codes***
+
+Traverse tree (Left = `0`, Right = `1`):
+
+- now lets create a `map(character -> huffman code)` , so we do a DFS of the huffman tree and for every time we reach a leaf eg. `C` we have the `code` for that value `C` that we will put in the hashmap. eg. for C code is `100`  coz `right left left` will take us to C
+
+```
+              (Root,11)
+              /       \
+          (A,5)      (CDBR,6)
+                     /      \
+                (CD,2)     (BR,4)
+                /   \      /    \
+            (C,1) (D,1) (B,2)  (R,2)
+
+```
+
+Codes:
+
+- A = `0`
+- C = `100`
+- D = `101`
+- B = `110`
+- R = `111`
+
+we have this above map which will help at time of decoding (converting encoded string to original form)
+
+---
+
+***Step 5: Encode String***
+
+Original: `ABRACADABRA`
+
+Replace each character with its code:
+
+```
+A → 0
+B → 110
+R → 111
+A → 0
+C → 100
+A → 0
+D → 101
+A → 0
+B → 110
+R → 111
+A → 0
+```
+
+Encoded:
+
+```
+0 110 111 0 100 0 101 0 110 111 0
+```
+
+Final compressed bitstring:
+
+```
+encoded form = 01101110100010101101110
+```
+
+---
+
+***Step 6: Decoding***
+
+Take encoded string, traverse tree from root:
+
+- `0` → A
+- `110` → B
+- `111` → R
+- … repeat until full message recovered.
+
+Decoded:
+
+```
+ABRACADABRA
+```
+
+### *Space Usage Comparison (Why Huffman is Optimal)*
+
+Let’s take the example **`BANANA`** (length = 6).
+
+**Character Frequencies**
+
+- `B`: 1
+- `A`: 3
+- `N`: 2
+
+**Fixed-length Encoding (naive)**
+
+If we use **fixed 2-bit codes** (since 3 unique chars → need ⌈log₂3⌉ = 2 bits per char):
+
+- Each character = 2 bits
+- Total = `6 × 2 = 12 bits`
+
+**Huffman Encoding**
+
+From Huffman tree:
+
+- `A → 0` (1 bit)
+- `N → 10` (2 bits)
+- `B → 11` (2 bits)
+
+Now encode:
+
+- `BANANA → B(11) A(0) N(10) A(0) N(10) A(0)`
+- Encoded string = `11010100` (8 bits)
+
+**Comparison**
+
+- Fixed-length: **12 bits**
+- Huffman: **8 bits**
+
+➡️ **Savings = 33%** space reduction!
+
+*note: here for theory purpose we taking for normal case (2 bits per char space) but in java each char is of `2 byte = 16 bits`  so considering that we saving lots of space*
+
+---
