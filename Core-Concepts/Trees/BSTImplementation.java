@@ -69,9 +69,6 @@ class BinarySearchTree<T extends Comparable<T>> {
     }
 
     // alternatively, we can use inorderPredecessor while deleting a node with two children
-    private Node<T> inorderPredecessor(Node<T> node) {
-        return node.right == null ? node : inorderPredecessor(node.right);
-    }
 
     public boolean contains(T key) {
         return containsHelper(root, key);

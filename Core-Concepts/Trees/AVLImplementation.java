@@ -15,7 +15,7 @@ class Node<T> {
 
 // AVL Tree are BST but with balance factor
 class AVLTree<T extends Comparable<T>> {
-    Node<T>root;
+    Node<T> root;
     public int height(Node<T>node){
         return node == null ? 0 : node.height;
     }
@@ -167,20 +167,20 @@ class AVLTree<T extends Comparable<T>> {
         // since the key is already deleted, we can not use that in conditions to determine whether it is LL or LR
         // solution : so here we will check balancing of the node itself to determine its type
         if(balancingFactor > 1) {
-            if(getBalancingFactor(node.left) >= 0){
+            if(getBalancingFactor(node.left) >= 0){ // LL
                 node = rotateRight(node);
             }
-            else if(getBalancingFactor(node) < 0){
-                node.left = rotateLeft(node.left);
+            else{
+                node.left = rotateLeft(node.left); // LR
                 node = rotateRight(node);
             }
         }
         if(balancingFactor < -1) {
-            if(getBalancingFactor(node.right) <= 0){
+            if(getBalancingFactor(node.right) <= 0){// RR
                 node = rotateLeft(node);
             }
-            else if(getBalancingFactor(node) > 0){
-                node.right = rotateRight(node.right);
+            else{
+                node.right = rotateRight(node.right);// RL
                 node = rotateLeft(node);
             }
         }
