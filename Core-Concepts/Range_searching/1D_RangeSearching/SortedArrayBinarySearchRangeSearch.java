@@ -113,7 +113,7 @@ class BinarySortedRangeSearch{
 /**
  * Demonstrates the usage of {@link BinarySortedRangeSearch}.
  */
-public class SortedBinarySearchRangeSearch {
+public class SortedArrayBinarySearchRangeSearch {
 
     public static void main(String[] args) {
         
