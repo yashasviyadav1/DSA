@@ -9,7 +9,8 @@ Range Searching:
     - Interval Trees
     - Segment Trees
 - 2D searching
-    - upcoming topic
+    - naive approch (O(n)
+    - 2 Dimensional Range Tree
 
 ## Computational Geometry:
 Computational geometry is the subfield of computer science that deals with designing, analyzing, and implementing algorithms for problems involving geometric objects like points, lines, and polygons
@@ -243,7 +244,7 @@ arr = {5, 8, 6, 3, 2, 7, 2, 6}
 
 ---
 
-## Comparison Summary
+### Comparison Summary
 
 - *Where k = number of elements in the query result*
 - 
@@ -255,3 +256,181 @@ arr = {5, 8, 6, 3, 2, 7, 2, 6}
 | AVL Tree | O(n log n) | O(log n + k) | O(log n) | O(n) | Dynamic, balanced operations |
 | Interval Tree | O(n log n) | O(log n + k) | O(log n) | O(n) | Interval overlap queries |
 | Segment Tree | O(n) | O(log n) | O(log n) | O(n) | Range aggregation queries |
+
+---
+
+## Two Dimensional :Range Searching
+
+In **1D range searching**, you had:
+
+- A set of points on a **line** (say `x`axis).
+- Queries like: “Give me all points between `x1` and `x2`”.
+
+In **2D range searching**:
+
+- You now have **points on a plane** (each point has `(x, y)` coordinates).
+- Queries look like:
+    
+    “Give me all points that lie inside a rectangle `[x1, x2] × [y1, y2]`.”
+    
+    (This rectangle is just the set of points where `x1 ≤ x ≤ x2` and `y1 ≤ y ≤ y2`.)
+    
+
+So basically:
+
+- In 1D → intervals on a line.
+- In 2D → rectangles on a plane.
+
+### Example
+
+Suppose you have points:
+
+`P = {(2,3), (4,7), (5,1), (7,2), (8,6), (9,4)}`
+
+Now query: **“All points with 4 ≤ x ≤ 8 and 2 ≤ y ≤ 6”**.
+
+- Rectangle is from `(4,2)` (bottom-left) to `(8,6)` (top-right).
+- Answer = `{(4,7 ❌), (5,1 ❌), (7,2 ✅), (8,6 ✅), (9,4 ❌)}`.
+    
+    So final result = `{(7,2), (8,6)}`.
+    
+
+---
+
+### Why do we care about 2D Range Searching?
+
+- **Databases** → queries like “find all hotels within latitude/longitude range”.
+- **Graphics/Games** → finding all objects in a rectangular region of the screen.
+- **Geographical maps** → retrieve all cities in a rectangular area.
+
+### Approaches
+
+1. **Naïve method**
+    
+    Just scan through all `n` points and check if each lies inside the rectangle.
+    
+    - Time: `O(n)` per query.
+    - Simple but slow if many queries.
+2. **Better structures**
+    
+    To answer faster, we build **special data structures**:
+    
+    - **2D Range Trees**
+    - **Priority Search Trees**
+    - **k-d Trees**
+    
+    These structures let you answer queries much faster than `O(n)`.
+
+### Step-by-Step Roadmap
+
+Here’s how we’ll cover it (without jumping too fast):
+
+1. Naïve 2D range searching.
+2. Idea of **divide-and-conquer** for splitting space.
+3. Introduction to **Range Trees** (simple version first).
+4. How queries work in a range tree.
+5. Space and time complexities (gradually).
+6. Advanced variations like Priority Search Trees and k-d Trees.
+
+---
+---
+## **2D Range Tree**
+
+Visualizing a 2D range Tree: 
+![mage also availble in freeform app on mac](https://i.ibb.co/CXh8LLL/image.png)
+
+Querying in a 2D range Tree: 
+![image also availble in freeform app on mac](https://i.ibb.co/QBMFHVm/image.png)
+### Introduction
+
+A 2D Range Tree is a balanced data structure used to efficiently answer orthogonal range queries (queries of the form: find all points within a rectangular region in 2D space).
+
+It extends the concept of a 1D range tree (like a balanced BST) into two dimensions.
+
+### Structure
+
+The primary structure is a balanced BST on the x-coordinates of the points.
+
+Each node in this tree additionally stores a secondary balanced BST (called y-subtree) containing all the points in its subtree, sorted by their y-coordinates.
+
+### Each node
+- x-coordinate (primary key)
+- y-subtree (all points in its subtree sorted by y)
+
+### Query Algorithm
+
+Given a query rectangle: [x1, x2] × [y1, y2], we want all points p = (px, py) with:
+
+`x1 ≤ px ≤ x2`   and   `y1 ≤ py ≤ y2`
+
+- **Split at root**:
+    - Traverse down the x-tree to find the **lowest common ancestor (LCA)** of `x1` and `x2`.
+    - This LCA splits the problem into two symmetric parts (left and right subtrees).
+- **Canonical vs Non-Canonical Nodes**:
+    - **Canonical node**: A subtree that lies **completely inside the x-range [x1, x2]**.
+        - For such nodes, we can **directly query their y-subtree** for `[y1, y2]`.
+    - **Non-canonical node**: A node that is a boundary case (x close to x1 or x2).
+        - For these, we **check the single node’s coordinates explicitly** (not the whole subtree).
+- **Processing**:
+    - Walk down from the split node towards `x1`:
+        - Whenever you move right, the **entire left child** is canonical → query its y-subtree.
+        - Continue until reaching `x1` boundary.
+    - Similarly walk down from split node towards `x2`:
+        - Whenever you move left, the **entire right child** is canonical → query its y-subtree.
+        - Continue until reaching `x2` boundary.
+
+### Optimization Insight
+
+- Yes, we only query y-subtrees for canonical nodes.
+- For boundary (non-canonical) nodes, we check just the node’s y-coordinate (not its subtree).
+- This avoids unnecessary traversal and improves efficiency.
+
+### Complexity
+
+- **Building**: `O(n log n)`
+- **Querying**: `O(log² n + k)`
+    - `log² n` = traversals in x + querying multiple y-subtrees.
+    - `k` = number of reported points.
+- **Space**: `O(n log n)` (each point is stored in multiple y-subtrees).
+
+### Why Y-subtrees are needed
+
+- **Naïve idea:** Search only in X-tree with condition `(a ≤ x ≤ b ∧ c ≤ y ≤ d)`.
+    
+    → Correct but inefficient: for every x in [a,b], you must check every point individually.
+    
+    → Cost = Θ(#points with x ∈ [a,b]).
+    
+- **With Y-subtrees:**
+    
+    When an X-subtree is **fully inside [a,b]**, you don’t descend further.
+    
+    Instead, you query its Y-subtree for y ∈ [c,d].
+    
+    → Cost per subtree = `O(log m + r)` where `m` = size of subtree, `r` = reported points.
+    
+    → Total query time = `O(log² n + k)` (where `k` = output size).
+
+
+### Canonical vs Non-Canonical Nodes (Definition)
+
+- **Canonical Node**:
+    
+    A node whose entire x-subtree lies inside `[x1, x2]`.
+    
+    - We can use its y-subtree directly.
+- **Non-Canonical Node**:
+    
+    A node that partially overlaps the x-range.
+    
+    - We check only its direct x,y coordinate (not its whole subtree).
+
+### Equality and Hashing
+
+When storing points in **Sets or HashSets**:
+
+- **equals()**: Ensures two points `(x1, y1)` and `(x2, y2)` are considered the same if both coordinates match.
+    - Without this, Java compares by **object reference**, so duplicates may slip in.
+- **hashCode()**: Required when using `HashSet` or `HashMap`.
+    - Ensures objects that are `equal()` hash to the same bucket.
+    - Without this, duplicate points may be stored in hash-based structures.
