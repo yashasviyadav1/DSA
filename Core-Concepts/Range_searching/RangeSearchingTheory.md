@@ -11,6 +11,7 @@ Range Searching:
 - 2D searching
     - naive approch (O(n)
     - 2 Dimensional Range Tree
+    - PST: Priority Search Trees
 
 ## Computational Geometry:
 Computational geometry is the subfield of computer science that deals with designing, analyzing, and implementing algorithms for problems involving geometric objects like points, lines, and polygons
@@ -434,3 +435,159 @@ When storing points in **Sets or HashSets**:
 - **hashCode()**: Required when using `HashSet` or `HashMap`.
     - Ensures objects that are `equal()` hash to the same bucket.
     - Without this, duplicate points may be stored in hash-based structures.
+
+
+## **PST - Priority Search Trees**
+
+**Basic idea**: in a query like find all points which are in range [x0,x1] && [y, infinity] here y is has a unbounded value so for this we use a max heap to represent y and for x (bounded in values) we make it as if a BST.
+
+similarly for values of [-infinity, y] or we can say y <= y0 we can use a min heap to represent y coordinates, note that we are not using 2 data structures rather a single tree where each point(x,y) in the tree node represent max heap node, but it is build like a BST
+
+eg. 
+![](https://i.ibb.co/zH4Jfm7H/image.png)
+ 
+
+Priority Search Trees (PSTs) offer a specialized and more memory-efficient alternative to 2D Range Trees, particularly excelling in specific types of queries where 2D Range Trees can be less optimal. 
+
+While both are used for querying points in a two-dimensional space, their underlying structures and ideal use cases differ significantly.
+
+> The primary advantage of a Priority Search Tree lies in its efficiency for **three-sided range queries**. This is a query that is bounded on three sides and infinite on one, for example, finding all points `(x, y)` such that `x1 <= x <= x2` and `y >= y_min`. takes time: **`O(log n + k)`** for three-sided queries
+> 
+
+> 2D Range Tree is designed for **four-sided orthogonal range queries,** where the query is a standard rectangle defined by `x1 <= x <= x2` and `y1 <= y <= y2`.
+> 
+
+### Basic Idea behind PST
+
+Priority Search Trees uses Heaps for storing nodes based on y coordinates (the unbound range) and for x they use the Binary Search Trees
+
+### Which Heap does PST uses for storing the y coordinates (Min Heap or Max Heap) ?
+
+PSTs can use either max-heap or min-heap property depending on what type of queries you want to optimize for:
+
+**Max-Heap PST** (What we built)
+
+- **Heap Property**: Parent.y ≥ Child.y (maximum y at root)
+- **Optimised For**: Queries of type `[x₁, x₂] × [y₀, +∞)`
+- **Query**: "Find all points in x-range [x₁, x₂] with y ≥ y₀"
+- **Use Cases**: "Points above a threshold", "higher priority items"
+
+**Min-Heap PST**
+
+- **Heap Property**: Parent.y ≤ Child.y (minimum y at root)
+- **Optimised For**: Queries of type `[x₁, x₂] × (-∞, y₀]`
+- **Query**: "Find all points in x-range [x₁, x₂] with y ≤ y₀"
+- **Use Cases**: "Points below a threshold", "lower priority items"
+
+building a PST from scratch: 
+
+![](https://i.ibb.co/B2rxcWz7/image.png)
+
+### Max-Heap PST Query Design
+
+***Overview***
+
+Design for efficiently answering 2D range queries of the form:
+**"Find all points with x ∈ [x₁, x₂] and y ≥ y₀"**
+
+**Core Data Structure Components**
+
+1. **PST Node Structure**
+
+```java
+PSTNode:
+├── Point (x, y, optional_data)
+├── Left Child Pointer
+├── Right Child Pointer  
+└── Splitting X-value (for BST property) // this node will have the value based on which on left are values <= splitXnode and on right are values > splitXNode
+
+this splitXNode is used for querying purpose efficintly
+```
+
+Reasons for using `SplittingXValue` in node: 
+
+- while querying deciding which way to go left or right after `curr` node using current nodes `x` value might result wrong because `curr` node’s `x` might not be the actual splitting boundary, explained below:-
+- **During Construction Time:**
+    
+    ```java
+    At root node (4,13):
+    - We have remaining elements: [(1,6), (3,2), (5,10), (8,5)]
+    - We calculate splitX = 3.0 based on these remaining elements (eg. 4 elements (0,1,2,3) median index = 1, 
+    	fetch value at index 1 (3,2) splitNodeX = 3 
+    - so (on left we send values <= splitNodeX) on (right we send values > splitNodeX)
+    - We split: Left gets [(1,6)], Right gets [(3,2), (5,10), (8,5)]
+    
+    				(4,13)
+    				/.    \
+    		 (1,16).  (3,2), (5,10), (8,5)
+    		 
+    ```
+    
+- **Main Reason to store the `splitNodeX`  is that During the Query Time:**
+    
+    ```java
+    At node (4,13):
+    - we can not decide to go left or right based on current nodes x value i.e 4 ❌ (because we while creation we had remaining elements)
+    - Now We DON'T have the remaining elements anymore!
+    - We only have the node's point: (4,13)
+    - We need to know: "How do I decide which subtree to visit?"
+    - so for that we stored the splitNodeX in the Node already to compare
+    
+    note: note if we used the curr.x value to compare to go left or right for query x=[3,5) y >= 5 thenwe would have 
+    			end up in left sub tree how ? curr nodes 4,13's x = 4 > 3 so we go left for smaller values, and we end up in wrong tree
+    			so this is the reason we use splitXNode to remember that on what basis we divided the tree for X nodes at the time of creation.
+    ```
+    
+
+**2. Tree Properties**
+
+- **Max-Heap Property**: Parent.y ≥ Child.y
+- **BST Property**: Left subtree x < splitting_x ≤ Right subtree x
+- **Balance**: O(log n) height via median splitting
+
+**Query Algorithm Design**
+
+Phase 1: Tree Traversal Strategy
+
+Decision Tree at Each Node:
+
+```java
+At node N with point (x, y):
+
+1. Y-PRUNING CHECK:
+   if N.y < y₀:
+       └── PRUNE: Skip entire subtree (key optimization!)
+   
+2. POINT INCLUSION CHECK:
+   if x₁ ≤ N.x ≤ x₂ AND N.y ≥ y₀:
+       └── INCLUDE: Add point to result set
+   
+3. SUBTREE EXPLORATION:
+   Determine which children to visit based on x-range overlap
+```
+
+**Phase 2: Subtree Selection Logic**
+
+X-Range Overlap Analysis:
+
+```java
+Given query range [x₁, x₂] and node's splitting value S:
+
+LEFT SUBTREE (x < S):
+├── Visit if: x₁ <= S
+
+RIGHT SUBTREE (x ≥ S):  
+├── Visit if: x₂ > S
+
+BOTH SUBTREES:
+└── Visit if: x₁ <= S ≤ x₂ (range spans splitting point)
+```
+
+### time complexity
+
+1. **Your sorting optimization is crucial** - by sorting once at the beginning instead of at every recursive call, you avoided the O(n log²n) trap and achieved optimal O(n log n) construction time.
+2. **Query performance is optimal** - O(log n + k) is the theoretical best you can achieve for this type of 2D range query, and your implementation achieves it.
+3. **The y-pruning is powerful** - when the heap property allows early termination, queries can run in O(1) time in the best case.
+4. **Space efficiency is excellent** - O(n) space is optimal for storing n points with additional structure.
+
+The time complexity you wrote in your comment was mostly correct, but let me clarify: the overall construction is O(n log n), not O(n log n) + O(n log n). The sorting and tree building both contribute O(n log n) terms, but they're sequential, so the total remains O(n log n).
