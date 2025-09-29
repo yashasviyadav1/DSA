@@ -12,6 +12,7 @@ Range Searching:
     - naive approch (O(n)
     - 2 Dimensional Range Tree
     - PST: Priority Search Trees
+    - K-Dimensional Tree (KD Tree)
 
 ## Computational Geometry:
 Computational geometry is the subfield of computer science that deals with designing, analyzing, and implementing algorithms for problems involving geometric objects like points, lines, and polygons
@@ -591,3 +592,473 @@ BOTH SUBTREES:
 4. **Space efficiency is excellent** - O(n) space is optimal for storing n points with additional structure.
 
 The time complexity you wrote in your comment was mostly correct, but let me clarify: the overall construction is O(n log n), not O(n log n) + O(n log n). The sorting and tree building both contribute O(n log n) terms, but they're sequential, so the total remains O(n log n).
+
+
+
+----
+----
+
+## **K-Dimensional Trees (K-D Trees)**
+
+A k-D tree is a binary tree that recursively partitions k-dimensional space by splitting along different dimensions at each level. It's particularly effective for:
+
+- Range searching in k-dimensional space
+- Nearest neighbour searches
+- Point location queries
+
+![](https://i.ibb.co/4gDj2H74/image.png)
+
+![](https://i.ibb.co/Nn71yJ32/image.png)
+
+![](https://i.ibb.co/nNS5cNhf/image.png)
+
+
+### Basic Idea
+
+- At each level of the tree, we split the points along a different dimension
+- Typically cycle through dimensions: level 0 splits on x-coordinate, level 1 on y-coordinate, level 2 on z-coordinate, etc.
+- Each internal node stores a point and represents a splitting hyperplane
+- Left subtree contains points with smaller coordinate values in the splitting dimension
+- Right subtree contains points with larger coordinate values
+
+### Construction Algorithm
+
+```java
+buildKDTree(points, depth):
+    if points is empty:
+        return null
+    
+    axis = depth % k  // cycle through dimensions
+    
+    // Sort points by the current axis
+    sort points by axis-th coordinate
+    
+    // Choose median as the splitting point
+    median = points.length / 2
+    
+    node = new Node(points[median])
+    node.left = buildKDTree(points[0...median-1], depth + 1)
+    node.right = buildKDTree(points[median+1...end], depth + 1)
+    
+    return node
+```
+
+### Time Complexity
+
+- Construction: `O(n log²n)` using sorting at each level
+- Can be optimised to `O(n log n)` using Q*uickselect* for median finding
+
+**Recurrence Relation:**
+
+- `T(n) = 2T(n/2) + O(n log n) = **O(n log² n)**` with sorting
+- `T(n) = 2T(n/2) + O(n) = **O(n log n)**` with quickselect
+
+### Building a k-D Tree: where `k=3`
+
+Let's take these 3D points:
+**Points: `[(3,6,1), (17,15,20), (13,15,10), (6,12,1), (9,1,25), (2,7,3), (10,19,5)]`**
+
+### Step 1: Root Node (Depth 0, Split on X-axis)
+
+- Current points: [(3,6,1), (17,15,20), (13,15,10), (6,12,1), (9,1,25), (2,7,3), (10,19,5)]
+- Sort by x-coordinate: [(2,7,3), (3,6,1), (6,12,1), (9,1,25), (10,19,5), (13,15,10), (17,15,20)]
+- Median index: 3 → **(9,1,25)** becomes root
+- Left subtree: [(2,7,3), (3,6,1), (6,12,1)]
+- Right subtree: [(10,19,5), (13,15,10), (17,15,20)]
+
+```
+             (9,1,25) [x-split at x=9]
+            /                        \
+[(2,7,3), (3,6,1), (6,12,1)]     [(10,19,5), (13,15,10), (17,15,20)]
+```
+
+### Step 2: Left Subtree (Depth 1, Split on Y-axis)
+
+- Points: [(2,7,3), (3,6,1), (6,12,1)]
+- Sort by y-coordinate: [(3,6,1), (2,7,3), (6,12,1)]
+- Median: **(2,7,3)**
+- Left subtree: [(3,6,1)]
+- Right subtree: [(6,12,1)]
+
+### Step 3: Right Subtree of Root (Depth 1, Split on Y-axis)
+
+- Points: [(10,19,5), (13,15,10), (17,15,20)]
+- Sort by y-coordinate: [(13,15,10), (17,15,20), (10,19,5)]
+- Median: **(17,15,20)**
+- Left subtree: [(13,15,10)]
+- Right subtree: [(10,19,5)]
+
+### Step 4: Depth 2 Nodes (Split on Z-axis)
+
+**Left-Left: (3,6,1)** - becomes leaf (single point)
+
+**Left-Right: (6,12,1)** - becomes leaf (single point)
+
+**Right-Left: (13,15,10)** - becomes leaf (single point)
+
+**Right-Right: (10,19,5)** - becomes leaf (single point)
+
+```java
+                    (9,1,25) [x-split, depth=0]
+                   /                        \
+                  /                          \
+          (2,7,3) [y-split, depth=1]    (17,15,20) [y-split, depth=1]
+         /                 \             /                         \
+        /                   \           /                           \
+   (3,6,1) [z-split]    (6,12,1)  (13,15,10) [z-split]         (10,19,5)
+   [leaf, depth=2]      [z-split]  [leaf, depth=2]             [z-split]
+                        [leaf, depth=2]                        [leaf, depth=2]
+```
+
+### Dimension Cycling in 3D
+
+**Pattern: axis = depth % 3**
+
+- **Depth 0**: axis = 0 % 3 = 0 (X-axis)
+- **Depth 1**: axis = 1 % 3 = 1 (Y-axis)
+- **Depth 2**: axis = 2 % 3 = 2 (Z-axis)
+- **Depth 3**: axis = 3 % 3 = 0 (X-axis again)
+- **Depth 4**: axis = 4 % 3 = 1 (Y-axis again)
+
+### How k-D Trees Stand Out vs Normal Searching
+
+**Normal/Naive Searching in 3D Space**
+
+Without k-D trees, how would we search for points in 3D space?
+
+**Linear Search Approach:**
+
+```java
+*// Find all points in range [x1,x2] × [y1,y2] × [z1,z2]*
+vector<Point> rangeSearch(vector<Point>& points, Range3D range) {
+    vector<Point> result;
+    for (Point p : points) {  *// O(n) - check every single point*
+        if (p.x >= range.x1 && p.x <= range.x2 &&
+            p.y >= range.y1 && p.y <= range.y2 &&
+            p.z >= range.z1 && p.z <= range.z2) {
+            result.push_back(p);
+        }
+    }
+    return result;
+}
+```
+
+**Time Complexity: `O(n)`** - Must check every single point!
+
+**k-D Tree's Smart Elimination Strategy**
+
+The key insight: **k-D trees eliminate entire regions of space without checking individual points!**
+
+**Example: Range Search [4,12] × [5,18] × [2,15]**
+
+```java
+Using our previous tree with root (8,14,8):
+
+                    (8,14,8) [X-split at x=8]
+                   /                         \
+        (2,7,3) [Y-split]              (12,3,18) [Y-split]
+       /              \                /                \
+   ...                ...           ...                ...
+```
+
+**Step 1: At root (8,14,8), X-split at x=8**
+
+- Query range: x ∈ [4,12]
+- Since 4 ≤ 8 ≤ 12, we need to search BOTH subtrees
+- But notice: if our query was x ∈ [1,6], we could **completely skip the right subtree!**
+
+**Step 2: Left child (2,7,3), Y-split at y=7**
+
+- Query range: y ∈ [5,18]
+- Since 5 ≤ 7 ≤ 18, search both subtrees
+- But if query was y ∈ [10,18], we'd **skip the left subtree entirely!**
+
+The Power of Pruning: 
+
+**Example showing massive elimination:**
+Suppose we search for range [15,20] × [10,25] × [5,30]:
+
+```java
+rangeSearchKD(root=(8,14,8), range=[15,20]×[10,25]×[5,30]):
+    *// x-split at 8, query x ∈ [15,20]// Since 15 > 8, we can COMPLETELY IGNORE left subtree!// This eliminates potentially thousands of points with one comparison!*
+    return rangeSearchKD(rightChild, range)
+```
+
+**Comparison:**
+
+- **Linear search**: Check all n points → O(n)
+- **k-D tree**: Eliminate half the points with one comparison → O(√n + k) average
+
+### [Optimisation] QuickSelect: a way to convert finding median from `nlogn` → `n` for median finding
+
+We find median of array at each level (for building of tree only)
+
+- how we usually find median is by sorting array and then taking the middle element, and recursively call for left and right subtrees. this results in `O(n*logn)` time for finding median and total time of building k-d tree : `O(n*logn*logn)`
+- We can optimise this by using quick select (the pivot concept taken from quick sort), this results in `O(n)` time for median finding and total k-d tree building in `O(n*logn)`
+
+> ⭐️ The Quick Select Approach is used to find the `kth` smallest or larger element in a unsorted array in linear time
+> 
+
+Complete Step-by-Step Example of how does quick select find the median in linear time: 
+
+**Problem**: Find the **4th smallest element** (k=4) in array: `[12, 3, 5, 7, 19, 26, 18, 4, 15]`
+
+Let's trace through the algorithm completely:
+
+### Initial Setup
+
+```java
+Array: [12, 3, 5, 7, 19, 26, 18, 4, 15]
+Indices: 0  1  2  3   4   5   6  7   8
+Goal: Find 4th smallest (k=3, since 0-indexed)
+Call: quickSelect(arr, left=0, right=8, k=3)
+```
+
+---
+
+Step 1: First Partition Call
+
+**Choose Pivot**
+
+```java
+Array: [12, 3, 5, 7, 19, 26, 18, 4, 15]
+Pivot = arr[right] = arr[8] = 15
+```
+
+**Partition Process**
+
+**Goal**: Put all elements ≤ 15 on left, > 15 on right
+
+```java
+i = left - 1 = -1  *// i tracks the "small elements" boundary*
+j loops from left=0 to right-1=7
+
+j=0: arr[0]=12 ≤ 15? YES
+     i++; i=0
+     swap(arr[0], arr[0]) → [12, 3, 5, 7, 19, 26, 18, 4, 15]
+     
+j=1: arr[1]=3 ≤ 15? YES  
+     i++; i=1
+     swap(arr[1], arr[1]) → [12, 3, 5, 7, 19, 26, 18, 4, 15]
+     
+j=2: arr[2]=5 ≤ 15? YES
+     i++; i=2  
+     swap(arr[2], arr[2]) → [12, 3, 5, 7, 19, 26, 18, 4, 15]
+     
+j=3: arr[3]=7 ≤ 15? YES
+     i++; i=3
+     swap(arr[3], arr[3]) → [12, 3, 5, 7, 19, 26, 18, 4, 15]
+     
+j=4: arr[4]=19 ≤ 15? NO
+     Do nothing
+     
+j=5: arr[5]=26 ≤ 15? NO  
+     Do nothing
+     
+j=6: arr[6]=18 ≤ 15? NO
+     Do nothing
+     
+j=7: arr[7]=4 ≤ 15? YES
+     i++; i=4
+     swap(arr[4], arr[7]) → [12, 3, 5, 7, 4, 26, 18, 19, 15]
+```
+
+**Final Pivot Placement**
+
+```java
+swap(arr[i+1], arr[right])
+swap(arr[5], arr[8]) → [12, 3, 5, 7, 4, 15, 18, 19, 26]
+
+Final state: [12, 3, 5, 7, 4, 15, 18, 19, 26]
+              ←--≤15--------→ ↑   ←--→15--→
+                           pivot
+                          index=5
+```
+
+**Decision Point**
+
+```java
+Pivot is at index 5
+We want k=3 (4th smallest element)
+Since k=3 < pivotIndex=5, search LEFT side
+Call: quickSelect(arr, left=0, right=4, k=3)
+```
+
+---
+
+**Step 2: Second Partition Call**
+
+```java
+Array: [12, 3, 5, 7, 4, 15, 18, 19, 26]
+Focus on: [12, 3, 5, 7, 4] (indices 0-4)
+Pivot = arr[4] = 4
+```
+
+**Partition Process**
+
+```java
+i = -1
+
+j=0: arr[0]=12 ≤ 4? NO
+     Do nothing
+     
+j=1: arr[1]=3 ≤ 4? YES
+     i++; i=0  
+     swap(arr[0], arr[1]) → [3, 12, 5, 7, 4, 15, 18, 19, 26]
+     
+j=2: arr[2]=5 ≤ 4? NO
+     Do nothing
+     
+j=3: arr[3]=7 ≤ 4? NO  
+     Do nothing
+```
+
+### Final Pivot Placement
+
+```java
+swap(arr[i+1], arr[right])  
+swap(arr[1], arr[4]) → [3, 4, 5, 7, 12, 15, 18, 19, 26]
+
+Final state: [3, 4, 5, 7, 12, 15, 18, 19, 26]
+              ↑  ↑   ←--→4--→
+            ≤4  pivot   >4
+                index=1
+```
+
+Decision Point
+
+```java
+Pivot is at index 1
+We want k=3  
+Since k=3 > pivotIndex=1, search RIGHT side
+Call: quickSelect(arr, left=2, right=4, k=3)
+```
+
+---
+
+**Step 3: Third Partition Call**
+
+Current Array and Setup
+
+```java
+Array: [3, 4, 5, 7, 12, 15, 18, 19, 26]
+Focus on: [5, 7, 12] (indices 2-4)
+Pivot = arr[4] = 12
+```
+
+**Partition Process**
+
+```java
+i = 1  *// left-1 = 2-1 = 1*
+
+j=2: arr[2]=5 ≤ 12? YES
+     i++; i=2
+     swap(arr[2], arr[2]) → [3, 4, 5, 7, 12, 15, 18, 19, 26]
+     
+j=3: arr[3]=7 ≤ 12? YES
+     i++; i=3  
+     swap(arr[3], arr[3]) → [3, 4, 5, 7, 12, 15, 18, 19, 26]
+```
+
+**Final Pivot Placement**
+
+```java
+swap(arr[i+1], arr[right])
+swap(arr[4], arr[4]) → [3, 4, 5, 7, 12, 15, 18, 19, 26]
+
+Pivot is at index 4
+We want k=3
+Since k=3 < pivotIndex=4, search LEFT side  
+Call: quickSelect(arr, left=2, right=3, k=3)
+```
+
+**Step 4: Fourth Partition Call**
+
+Current Array and Setup
+
+```java
+Array: [3, 4, 5, 7, 12, 15, 18, 19, 26]
+Focus on: [5, 7] (indices 2-3)
+Pivot = arr[3] = 7
+```
+
+Partition Process
+
+```java
+i = 1  *// left-1 = 2-1 = 1*
+
+j=2: arr[2]=5 ≤ 7? YES
+     i++; i=2
+     swap(arr[2], arr[2]) → [3, 4, 5, 7, 12, 15, 18, 19, 26]
+```
+
+Final Pivot Placement
+
+```java
+swap(arr[i+1], arr[right])
+swap(arr[3], arr[3]) → [3, 4, 5, 7, 12, 15, 18, 19, 26]
+
+Pivot is at index 3
+We want k=3
+Since k=3 == pivotIndex=3, WE FOUND IT!
+```
+
+Final Result
+
+---
+
+**Answer**: The **4th smallest element** is `arr[3] = 7`
+
+**Verification**:
+Sorted array would be: `[3, 4, 5, 7, 12, 15, 18, 19, 26]`
+4th smallest (index 3): `7` ✓
+
+## Time Complexity Analysis
+
+**Each step eliminated roughly half the elements:**
+
+- Step 1: 9 elements → 5 elements
+- Step 2: 5 elements → 3 elements
+- Step 3: 3 elements → 2 elements
+- Step 4: 2 elements → Found!
+
+**Pattern**: n → n/2 → n/4 → n/8 → ...
+
+**Work done**: O(n) + O(n/2) + O(n/4) + ... = O(n)
+
+**Visual Summary**
+
+```java
+Initial: [12, 3, 5, 7, 19, 26, 18, 4, 15]
+                                       ↑ pivot=15
+
+Step 1:  [12, 3, 5, 7, 4] | [15] | [18, 19, 26]
+                       ↑ pivot=4        
+
+Step 2:  [3] | [4] | [5, 7, 12]
+                ↑ pivot=4  
+
+Step 3:  [5, 7] | [12]
+             ↑ pivot=7 
+
+Step 4:  [5] | [7] 
+               ↑ FOUND! k=3
+```
+
+This is why QuickSelect is so powerful - it eliminates large portions of the search space at each step, giving us O(n) average time complexity!
+
+so quick select keeps dividing the array: 
+
+```java
+TO(n) = O(n) + O(n/2) + O(n/4)....  => O(n). - average case
+
+but in word case: O(n*n)
+```
+
+### QuickSelect visualised
+
+see left to right
+
+![image.png](https://i.ibb.co/35xYPtc4/image.png)
+
+---
