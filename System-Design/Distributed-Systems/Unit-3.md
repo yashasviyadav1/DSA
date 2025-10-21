@@ -485,6 +485,120 @@ Possible Plans:
 
 → Optimizer chooses **P2** (minimum 1 GB transfer).
 
+### **Optimization Strategies:**
+
+1. **Exhaustive Search**
+2. **Heuristic-Based**
+3. **Cost-Based**
+
+### 1. Exhaustive Search
+
+Idea: Generate all possible execution plans and choose the one with minimum cost.
+
+- Enumerate all join orders, access paths, and site combinations.
+- Compute cost for each plan (CPU, I/O, communication).
+- Pick the lowest-cost one.
+
+**Example:**
+
+```sql
+For three relations A, B, C —
+possible join orders = (A ⋈ B) ⋈ C, (A ⋈ C) ⋈ B, (B ⋈ A) ⋈ C, etc. → **n! combinations**.
+```
+
+**Pros:** Guarantees the *optimal* plan.
+
+**Cons:** Exponential complexity: `O(n!)` Impractical for queries with more than ~5–6 relations.
+
+**Used in:** Research prototypes or small queries where plan space is small.
+
+### 2. Heuristic-Based
+
+The heuristic (rule of thumb) used here is: **"Push selections down"** or **"Do the filtering first."**  means using common-sense rules (like "filter early" or "drop columns you don't need") to quickly find a *good enough* plan for running a database query.
+
+Use transformation rules and heuristics (common-sense rules) instead of exploring every plan. Some Common Heuristics:
+
+1. Push selections down to reduce intermediate results early. (i.e filter first and combine after)
+2. Perform projections early to eliminate unnecessary columns.
+3. Combine operations whenever possible.
+
+Example: Instead of joining first and then filtering:
+
+```sql
+-- natural joining employee and department tables first and then filtering the rows based on delhi city
+σ(city='Delhi')(EMP ⋈ DEPT)
+```
+
+Heuristic optimizer does:
+
+```sql
+-- filtering delhi rows from department table first and then natural join those filtered result with employee table
+(σ(city='Delhi')(DEPT)) ⋈ EMP
+```
+
+→ reduces transmitted tuples → less cost.
+
+**Pros:**
+
+- Polynomial time
+- Efficient for large queries
+
+**Cons:**
+
+- May miss the globally optimal plan (approximation)
+
+**Used in:** Commercial systems when query complexity is large.
+
+### 3. Cost-Based (most commonly used)
+
+- Estimate cost of operations
+- Use statistics (cardinality, selectivity)
+- Choose minimum estimated cost
+
+***How Cost-Based Optimization Works***
+
+The optimizer becomes a super-detailed trip planner. It doesn't just guess; it *estimates* the "cost" (usually meaning time, CPU work, and disk reads) for every step of every possible plan.
+
+To do this, it needs two things from its "statistics" database:
+
+1. **Cardinality (How many items?)**
+    - It knows: The **Bank** table has 10 million customers. and The **Post Office** table has 5 million packages. then tells the optimizer how "big" each table is.
+2. **Selectivity (How specific is my filter?)**
+    - It knows: The filter `city='Delhi'` will only match 0.01% of the packages in the **Post Office** (this is called "low selectivity" - it's very specific).
+    - It knows: A filter like `status='open'` might match 50% of the **Bank** accounts (this is "high selectivity").
+    
+    > *note: This selectivity statistic is taken from the histogram of the tables, in modern databases the database keeps a "dirty" counter for each table. Every time you `INSERT`, `UPDATE`, or `DELETE` a row, the counter goes up. Low-priority background process will automatically run to create a new histogram snapshot.The histogram 📊 is created periodically. The query optimizer uses the most recent snapshot it has.*
+    > 
+
+**Comparing Plans with Costs**
+
+Now, the optimizer calculates the *total cost* for all the different plans it can think of.
+
+**→ Plan A: Filter First (The Heuristic Plan)**
+
+`(σ(city='Delhi')(Post Office)) ⋈ Bank`
+
+1. Cost to filter Post Office: (Scan 5 million packages) x (0.01% match) = Cost: 500 units (This finds ~500 packages for Delhi).
+2. Cost to join 500 packages with 10 million bank accounts: This is a small thing joining a big thing. Cost: 20,000 units.
+3. TOTAL ESTIMATED COST: 20,500 units
+
+**→ Plan B: Join First (The "Bad" Plan)**
+
+`σ(city='Delhi')(Bank ⋈ Post Office)`
+
+1. Cost to join 10 million accounts with 5 million packages: This is a *massive* operation. The intermediate result is gigantic. Cost: 90,000,000,000 units.
+2. Cost to filter that giant result for 'Delhi': Cost: 1,000,000 units.
+3. TOTAL ESTIMATED COST: 91,000,000,000 units
+
+**The Decision**
+
+Choose minimum estimated cost
+
+- **Plan A Cost:** 20,500
+- **Plan B Cost:** 91,000,000,000
+
+looking at numbers, optimizer looks at the numbers. It picks **Plan A** because its estimated cost is dramatically lower.
+
 ### Step 4: Local Optimization
 
 Once the global plan is finalized, each site performs local optimization — i.e. optimizing how to execute its own subquery using the local DBMS optimizer.
