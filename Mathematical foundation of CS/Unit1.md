@@ -669,9 +669,13 @@ So, we use a "cheat." We **standardize** any normal distribution into a special 
 • *Standard Normal Distribution: A special bell curve with a Mean ($\mu$) of 0 and a Standard Deviation ($\sigma$) of 1.*
 We do this using a **Z-Score**.
 
-> The Z-Score formula is:
+> The Z-Score formula for a single observation is:
 **$z = \frac{x - \mu}{\sigma}$**
 > 
+
+> Z-score for a sample mean (used in statistical inference in unit 3): 
+$z = \frac{\bar{x} - \mu}{\sigma / \sqrt{n}}$
+>
 
 This simple formula translates your specific value ($x$) into a "Z-score." The Z-score simply tells you:
 "How many standard deviations is $x$ away from the mean?"
