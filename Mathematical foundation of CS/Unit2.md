@@ -1,3 +1,5 @@
+# Unit 2
+
 ![unit 2 topics](https://i.ibb.co/mVyHprK8/image.png)
 
 ### 1. Random Samples
