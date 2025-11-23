@@ -1323,51 +1323,73 @@ Let's say the average runtime of your algorithm is 50 ms ($\mu=50$), and the sta
 A Markov Chain is a mathematical model for a **system that moves between different "states."**
 It's a "stochastic process," meaning it's random, but its randomness follows specific rules.
 **The "Story":**
-• Imagine a system that can be in one of several states. (e.g., A server is `[Up]`, `[Down]`, or `[Busy]`).
-• At each "tick" of time (e.g., every second), the system can *transition* to another state or *stay* in its current state.
+
+- Imagine a system that can be in one of several states. (e.g., A server is `[Up]`, `[Down]`, or `[Busy]`).
+- At each "tick" of time (e.g., every second), the system can *transition* to another state or *stay* in its current state.
 • There's a *probability* associated with each transition. (e.g., "If the server is `[Up]`, there's a 1% chance it goes `[Down]`, a 20% chance it becomes `[Busy]`, and a 79% chance it just stays `[Up]`).
-**Examples:**
-• Weather: The states are `[Sunny]`, `[Cloudy]`, `[Rainy]`.
-• Web User: The states are `[Homepage]`, `[About Page]`, `[Contact Page]`.
-• NLP: The states are words. What's the probability the *next* word is "cheese" *given* the current word is "macaroni"?
+- **Examples:**
+    - Weather: The states are `[Sunny]`, `[Cloudy]`, `[Rainy]`.
+    - Web User: The states are `[Homepage]`, `[About Page]`, `[Contact Page]`.
+    - NLP: The states are words. What's the probability the *next* word is "cheese" *given* the current word is "macaroni"?
+    
 
 **2. The "Markov Property" (The Key to Everything)**
+
 This is the most important rule, and it should sound familiar to you. The Markov Property is **Memorylessness**.**"The future depends *only* on the *present* state, not the past."**
-means**:** To predict the weather for tomorrow, a Markov Chain *only* cares about what the weather is *today*. It doesn't care that it was sunny for the past 30 days. All the information about the past is "baked into" the present state.
+means:  To predict the weather for tomorrow, a Markov Chain *only* cares about what the weather is *today*. It doesn't care that it was sunny for the past 30 days. All the information about the past is "baked into" the present state.
 
 **3. The Components**
 To build a Markov Chain, you need two things:
+
 **a) A Set of States ($S$)**
-• A finite list of all possible states. e.g., $S = \{\text{State 1, State 2}\}$
+
+- A finite list of all possible states. e.g., $S = \{\text{State 1, State 2}\}$
+
 **b) A Transition Matrix ($P$)**
-• This is the "engine" of the chain. It's a matrix that holds all the "transition probabilities."
-• $P_{ij}$ = The probability of moving from **State *i*** to **State *j*** in one step.
+
+This is the "engine" of the chain. It's a matrix that holds all the "transition probabilities."
+
+$P_{ij}$ = The probability of moving from **State *i*** to **State *j*** in one step.
 
 **Example: A Simple 2-State Weather Model**
-• **States ($S$):** $S = \{1: \text{Sunny}, 2: \text{Rainy}\}$
-• **Transition Rules:**
-    ◦ If it's Sunny (State 1) today, there's a 90% chance it's Sunny (1) tomorrow and a 10% chance it's Rainy (2).
-    ◦ If it's Rainy (State 2) today, there's a 50% chance it's Sunny (1) tomorrow and a 50% chance it stays Rainy (2).
-• Transition Matrix ($P$):
+
+**States ($S$):** $S = \{1: \text{Sunny}, 2: \text{Rainy}\}$
+
+**Transition Rules:**
+
+- If it's Sunny (State 1) today, there's a 90% chance it's Sunny (1) tomorrow and a 10% chance it's Rainy (2).
+- If it's Rainy (State 2) today, there's a 50% chance it's Sunny (1) tomorrow and a 50% chance it stays Rainy (2).
+- Transition Matrix ($P$):
 We build a matrix where row i represents today's state and column j represents tomorrow's state.
 
 $P = \begin{matrix} & \text{Sunny (j=1)} & \text{Rainy (j=2)} \\ \text{Sunny (i=1)} & 0.9 & 0.1 \\ \text{Rainy (i=2)} & 0.5 & 0.5 \end{matrix}$
-    ◦ Notice: **Each row must sum to 1.** (From any given state, *something* has to happen).
+
+Notice: **Each row must sum to 1.** (From any given state, *something* has to happen).
+
 This matrix and set of states *is* the Markov Chain.
 
 **4. The Application: Predicting Future States**
+
 How do we find the probability of the weather in 3 days?
+
 Let's say our **Initial State** is a vector, $v_0$. It's Day 0, and it's `100%` Sunny.
-    ◦ $v_0 = \begin{bmatrix} 1 & 0 \end{bmatrix}$ (100% in State 1, 0% in State 2)
+
+$v_0 = \begin{bmatrix} 1 & 0 \end{bmatrix}$ (100% in State 1, 0% in State 2)
 
 **After 1 Day ($v_1$):** We just multiply our vector by the matrix $P$.
-    ◦ $v_1 = v_0 \cdot P = \begin{bmatrix} 1 & 0 \end{bmatrix} \begin{bmatrix} 0.9 & 0.1 \\ 0.5 & 0.5 \end{bmatrix} = \begin{bmatrix} 0.9 & 0.1 \end{bmatrix}$
-    ◦ Result**:** 90% chance of Sun, 10% chance of Rain. (This matches our rules).
+
+$v_1 = v_0 \cdot P = \begin{bmatrix} 1 & 0 \end{bmatrix} \begin{bmatrix} 0.9 & 0.1 \\ 0.5 & 0.5 \end{bmatrix} = \begin{bmatrix} 0.9 & 0.1 \end{bmatrix}$
+Result:  90% chance of Sun, 10% chance of Rain. (This matches our rules).
+
 **After 2 Days ($v_2$):** We multiply *again*.
-    ◦ $v_2 = v_1 \cdot P = \begin{bmatrix} 0.9 & 0.1 \end{bmatrix} \begin{bmatrix} 0.9 & 0.1 \\ 0.5 & 0.5 \end{bmatrix} = \begin{bmatrix} (0.9\cdot0.9 + 0.1\cdot0.5) & (0.9\cdot0.1 + 0.1\cdot0.5) \end{bmatrix} = \begin{bmatrix} 0.86 & 0.14 \end{bmatrix}$
-    ◦ **Result:** 86% chance of Sun, 14% chance of Rain.
-• **After *n* Days ($v_n$):** This is the magic. We just use matrix exponentiation.
-    ◦ **$v_n = v_0 \cdot P^n$**
+
+$v_2 = v_1 \cdot P = \begin{bmatrix} 0.9 & 0.1 \end{bmatrix} \begin{bmatrix} 0.9 & 0.1 \\ 0.5 & 0.5 \end{bmatrix} = \begin{bmatrix} (0.9\cdot0.9 + 0.1\cdot0.5) & (0.9\cdot0.1 + 0.1\cdot0.5) \end{bmatrix} = \begin{bmatrix} 0.86 & 0.14 \end{bmatrix}$
+
+**Result:** 86% chance of Sun, 14% chance of Rain.
+
+**After *n* Days ($v_n$):** This is the magic. We just use matrix exponentiation.
+
+**$v_n = v_0 \cdot P^n$**
 
 **5. The "Big Goal of markov chain": The Stationary Distribution ($\pi$)**
 
@@ -1383,14 +1405,22 @@ Mathematically, we write:
 
 Which means: “If the system is already at equilibrium, applying the transition rules keeps it in equilibrium.”
 
-• **Question:** If this weather model runs for 1,000 days, what's the probability it's Sunny?
-• **Answer:** We are looking for the **Stationary Distribution ($\pi$)**. This is a special probability vector that **does not change** when you multiply it by $P$.
-• **The Formula:** $\pi = \pi \cdot P$
-• **In English:** "The probability of being in a state *tomorrow* ($\pi \cdot P$) is the *exact same* as the probability of being in a state *today* ($\pi$)." This is the "steady state" or "equilibrium."
+**Question:** If this weather model runs for 1,000 days, what's the probability it's Sunny?
+
+**Answer:** We are looking for the **Stationary Distribution ($\pi$)**. This is a special probability vector that **does not change** when you multiply it by $P$.
+
+> **The Formula:** $\pi = \pi \cdot P$
+> 
+
+**In English:** "The probability of being in a state *tomorrow* ($\pi \cdot P$) is the *exact same* as the
+
+probability of being in a state *today* ($\pi$)." This is the "steady state" or "equilibrium."
+
 For our weather example, if you solve $\pi = \pi P$
 
 you find: $\pi = \begin{bmatrix} 0.833 & 0.167 \end{bmatrix}$
-• **Interpretation:** In the long run, it will be Sunny **83.3%** of the time and Rainy **16.7%** of the time, *regardless* of whether you started on a Sunny or Rainy day.
+
+**Interpretation:** In the long run, it will be Sunny **83.3%** of the time and Rainy **16.7%** of the time, *regardless* of whether you started on a Sunny or Rainy day.
 
 **Proof: how did we get this $\pi = \begin{bmatrix} 0.833 & 0.167 \end{bmatrix}$ ?**
 
@@ -1398,10 +1428,7 @@ you find: $\pi = \begin{bmatrix} 0.833 & 0.167 \end{bmatrix}$
 
 Given transition matrix:
 
-$P = \begin{bmatrix}
-0.9 & 0.1 \\
-0.5 & 0.5
-\end{bmatrix}$
+$P = \begin{bmatrix} 0.9 & 0.1 \\ 0.5 & 0.5 \end{bmatrix}$
 
 Let the stationary distribution be: $\pi = [\pi_S, \pi_R]$
 
@@ -1411,34 +1438,23 @@ ignore the 2nd equation coz its redundant
 
 gives the equation: $\pi_S = 0.9\pi_S + 0.5\pi_R$
 
-Solve: $\begin{aligned}
-\pi_S - 0.9\pi_S &= 0.5\pi_R \\
-0.1\pi_S &= 0.5\pi_R \\
-\pi_S &= 5\pi_R
-\end{aligned}$
+Solve: $\begin{aligned} \pi_S - 0.9\pi_S &= 0.5\pi_R \\ 0.1\pi_S &= 0.5\pi_R \\ \pi_S &= 5\pi_R \end{aligned}$
 
 Use normalization:
 
-$\begin{aligned}
-\pi_S + \pi_R &= 1 \\
-5\pi_R + \pi_R &= 1 \\
-6\pi_R = 1 &\Rightarrow \pi_R = \frac{1}{6} \\
-\pi_S = 5 \cdot \frac{1}{6} &= \frac{5}{6}
-\end{aligned}$ 
+$\begin{aligned} \pi_S + \pi_R &= 1 \\ 5\pi_R + \pi_R &= 1 \\ 6\pi_R = 1 &\Rightarrow \pi_R = \frac{1}{6} \\ \pi_S = 5 \cdot \frac{1}{6} &= \frac{5}{6} \end{aligned}$
 
 Final stationary distribution:
 
-$\pi = \begin{bmatrix}
-0.833 \\
-0.167
-\end{bmatrix}$
+$\pi = \begin{bmatrix} 0.833 \\ 0.167 \end{bmatrix}$
 
 **6. CS Application of Marcov chain**
+
 1. **Google's PageRank Algorithm:** The *entire web* is a massive Markov Chain.
-    ◦ **States:** Web pages.
-    ◦ **Transitions:** Links. (A 10% chance you click a link, a 90% chance you stay).
-    ◦ The **Stationary Distribution ($\pi$)** of this chain tells you the long-run probability of a user "landing" on a page.
-    ◦ This probability *is* the PageRank. **PageRank = Stationary Distribution.**
+    - **States:** Web pages.
+    - **Transitions:** Links. (A 10% chance you click a link, a 90% chance you stay).
+    - The **Stationary Distribution ($\pi$)** of this chain tells you the long-run probability of a user "landing" on a page
+    - This probability *is* the PageRank. **PageRank = Stationary Distribution.**
 2. **Queuing Theory:** (Like your Poisson/Exponential). The number of people in a queue `[0, 1, 2, 3...]` is a state. The Markov Chain models the flow of customers.
 3. **NLP (n-gram models):** What's the probability the next word is "Chain" given the current state is "Markov"?
 4. **Reinforcement Learning:** (Markov Decision Processes are an advanced version of this, forming the basis of AI in games and robotics).
@@ -1446,6 +1462,3 @@ $\pi = \begin{bmatrix}
 ---
 
 next: unit 2
-
-
-
