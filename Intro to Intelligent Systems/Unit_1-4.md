@@ -1788,11 +1788,10 @@ Belief(Bomb) = 0.0
    ↑
 "I have ZERO evidence there IS a bomb"
 
-Plausibility(Bomb) = (1 - evidence that there is no bomb)
-									 = 1 - 0 (0 becoz "I have no evidence there ISN'T a bomb either")
+Plausibility(Bomb) = (1 - evidence that there is no bomb) => 1 - 0 (0 becoz "I have no evidence there ISN'T a bomb either")
 									 = 1.0
 
-**Interval: [0.0, 1.0]**
+Interval: [0.0, 1.0]
             ↑    ↑
          HUGE GAP = Total ignorance!
          
@@ -1820,12 +1819,11 @@ Belief(Rain) = 0.4
    ↑
 "I have evidence supporting 40% confidence"
 
-Plausibility(Rain) = 1 - probabiliy of not raining from evidence
-									 = 0.8
+Plausibility(Rain) = 1 - probabiliy of not raining from evidence => 0.8
    ↑
 "Nothing contradicts up to 80% chance"
 
-**Interval: [0.4, 0.8]**
+Interval: [0.4, 0.8]
            ↑    ↑
         MEDIUM GAP = Some uncertainty
         
