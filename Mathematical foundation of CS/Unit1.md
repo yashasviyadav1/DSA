@@ -176,6 +176,8 @@ This is what you get when you **repeat a Bernoulli trial $n$ times** and count t
 - **Parameters:**
     - $n$: The total number of trials.
     - $p$: The probability of success *in each individual trial*.
+
+   <b> <i>note: by success we are refering to outcome you are counting (eg. 7 heads in 10 trials ✅), and not about consecutive/successive outcomes (eg. 7 successive heads out of 10 trials)❌ .</i> </b>
 - **CS Example:**
     - You send **100 packets** ($n=100$). Each has a **95%** chance of success ($p=0.95$). What's the probability that *exactly 98* packets arrive? ($k=98$).
     - You have a batch of **50** hard drives ($n=50$). The probability of any *one* drive being defective is **1%** ($p=0.01$). What's the probability of finding *exactly 2* defective drives? ($k=2$).
@@ -186,7 +188,7 @@ This formula has three parts:
 
 $P(X = k) = \binom{n}{k} p^k (1-p)^{n-k}$
 
-- $\binom{n}{k}$: The "binomial coefficient," read as "**n choose k**". It's the number of *ways* you can arrange $k$ successes within $n$ trials. ($\binom{n}{k} = \frac{n!}{k!(n-k)!}$).
+- $\binom{n}{k}$: The "binomial coefficient," read as "**n choose k**". It represents the number of ways to choose k successes from 𝑛 trials, without caring about the order. basically nCk ($\binom{n}{k} = \frac{n!}{k!(n-k)!}$).
 - $p^k$: The probability of getting $k$ successes.
 - $(1-p)^{n-k}$: The probability of getting $(n-k)$ failures.
 
@@ -349,7 +351,7 @@ Let's plug this into the formula: $P(X = 0) = \frac{2.5^0 \times e^{-2.5}}{0!}$
 1. $\lambda^k \rightarrow 2.5^0 = 1$
 (Anything to the power of 0 is 1)
 2. $e^{-\lambda} \rightarrow e^{-2.5} \approx 0.082$
-(This is the "scaling factor")
+(This is the "scaling factor") - refer to below for how to compute squareroot for a decimal value
 3. $k! \rightarrow 0! = 1$
 (By mathematical definition, 0-factorial is 1)
 
@@ -361,6 +363,56 @@ $P(X = 0) = 0.082$
 
 So, there is an **8.2% chance** of finding zero bugs in that block of code, even though the average is 2.5.
 
+---
+#### Above Calculation explained:  
+$e^{-\lambda}$
+
+$e^{-2.5}$
+
+lets compute only the denominator right now
+
+$e^{2} * e^{0.5}$
+
+$e \approx 2.718$
+
+But how do we calculate the square root of 2.718 ?
+
+
+### Square Root Approximation (Method )
+
+We want to approximate: $\sqrt{2.718}$
+
+$k = 2.718$ (the value we need to find square root for)
+
+**Step 1: Find nearby perfect squares**
+
+- $(1.6^2 = 2.56)$
+- $(1.7^2 = 2.89)$
+
+Since $(2.718)$ lies between $(2.56)$ and $(2.89)$, the root lies between $(1.6)$ and $(1.7)$.
+
+range:
+
+$left = 1.6$
+
+$right = 1.7$
+
+**Step 2: Find how far 2.718 is between the two squares**
+
+Formula = $(k - left)/(right - left)$
+
+$\text{Fraction} = \frac{2.718 - 2.56}{2.89 - 2.56}
+= \frac{0.158}{0.33} \approx 0.48$
+
+**Step 3: Move that fraction between 1.6 and 1.7**
+
+$\text{perfect square} = \text{left} + \text{fraction} \times (\text{distance between left and right})$
+
+$1.6 + 0.48(0.1) = 1.6 + 0.048 = 1.648$
+
+**Final Approximation**
+
+$\sqrt{2.718} \approx 1.648$
 ---
 
 ### Summary: Which PMF to Use?
@@ -440,6 +492,8 @@ This is one of the most important distributions in computer science and is direc
 - **Exponential PDF (Continuous):** Measures the *time between* those events (e.g., 0.1 seconds between requests) or How long do we have to wait *for the next* customer?" (e.g., 0.45 minutes)
 
 The graph of the exponential distribution always has this "decay" shape. It shows that very short wait times are the most likely, and very long wait times are very unlikely (but still possible).
+
+![exponential distribution graph](https://i.ibb.co/VckFfSbb/image.png)
 
 **Examples:**
 
