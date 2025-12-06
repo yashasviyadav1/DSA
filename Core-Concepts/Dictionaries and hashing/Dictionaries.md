@@ -116,7 +116,31 @@ This document provides a concise overview of the different ways to implement a D
 - **Why do they happen?** They are a direct result of the integer overflow wrap-around.
 - **How to fix it?** An array index cannot be negative. You must make the hash code non-negative *before* you take the modulo % M.
 - **The Best Method:** Use a bitwise AND to force the sign bit to zero. This is robust and handles all edge cases.
-- int index = (hashCode & 0x7fffffff) % arraySize;
+- `int index = (hashCode & 0x7fffffff) % arraySize`;
+
+**And with `0x7fffffff` explained:-**
+
+In 32-bit signed integers, the first bit (left most) is the sign bit.
+If it is 0 → the number is positive.
+If it is 1 → the number is negative.
+So in order to convert its sign to +ve (keeping all digits same) we and it with `Integer.MAX_VALUE` i.e `0x7fffffff` (in decimal form)
+
+**Why do we use `Int.MAX` or `0x7fffffff` for AND operation:-**
+
+Because `Integer.MAX_VALUE` or `0x7fffffff` is `01111111 11111111 11111111 11111111` in binary. 
+Note that only first bit is 0.
+So if we have any negative number eg. 
+```
+-5:         11111111 11111111 11111111 11111011  
+ &
+0x7fffffff: 01111111 11111111 11111111 11111111  
+
+result:     01111111 11111111 11111111 11111011   -> 5
+```
+
+So This way we can change the sign of any value (which is necessary because we need to find index from teh hash so we need +ve hash value)
+
+
 
 ### **4.1 Core Architecture**
 
