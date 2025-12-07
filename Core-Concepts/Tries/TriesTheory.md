@@ -10,7 +10,7 @@ A trie is a tree-like information retrieval data structure whose nodes store the
 
 The Trie **data structure** is used to store a set of keys represented as strings. It allows for efficient **retrieval** and **storage** of keys, making it highly effective in handling large datasets. Trie supports operations such as **insertion**, **search**, **deletion** of keys, and **prefix** searches.
 
-![image.png](https://i.ibb.co/gb1XBg7b/image.png)
+![image.png](https://i.ibb.co/LDXQfsfG/image.png)
 
 In a standard trie : Each `TrieNode` consists of : 
 

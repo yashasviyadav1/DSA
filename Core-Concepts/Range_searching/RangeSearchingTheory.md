@@ -242,8 +242,9 @@ arr = {5, 8, 6, 3, 2, 7, 2, 6}
 
 ***how to figure out weather it is `No overlap` or `Complete overlap` or `Partial overlap` between curr node and query:*** 
 
-![](https://i.ibb.co/MDqxtR7P/image.png)
 
+<!-- ![image backup](https://i.ibb.co/MDqxtR7P/image.png) --> 
+![image](https://private-user-images.githubusercontent.com/124666305/523498266-519fa744-44d7-424d-b6ee-8da8b62ed662.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NjUxMzY1MDIsIm5iZiI6MTc2NTEzNjIwMiwicGF0aCI6Ii8xMjQ2NjYzMDUvNTIzNDk4MjY2LTUxOWZhNzQ0LTQ0ZDctNDI0ZC1iNmVlLThkYThiNjJlZDY2Mi5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUxMjA3JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MTIwN1QxOTM2NDJaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT1hMmIyODE2ZDZkNWFmMDI4YWE0MzZjNmUxZjkxMGViMWYzYjg4MmM0N2EzZTRmYmRiZmViNDc3Y2FkNDEwOGVkJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.rouy4g2z9ZkaqY8TCasTHG5GccRdteVnKsU5WFS9Z9E)
 ---
 
 ### Comparison Summary
@@ -342,7 +343,10 @@ Visualizing a 2D range Tree:
 ![mage also availble in freeform app on mac](https://i.ibb.co/CXh8LLL/image.png)
 
 Querying in a 2D range Tree: 
-![image also availble in freeform app on mac](https://i.ibb.co/QBMFHVm/image.png)
+<!-- backup image url -->
+<!-- ![image also availble in freeform app on mac](https://i.ibb.co/QBMFHVm/image.png) -->
+
+![github url for image](https://private-user-images.githubusercontent.com/124666305/523500094-dc149ecf-8eee-421c-a5e8-a991ab64e629.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NjUxMzc3MDEsIm5iZiI6MTc2NTEzNzQwMSwicGF0aCI6Ii8xMjQ2NjYzMDUvNTIzNTAwMDk0LWRjMTQ5ZWNmLThlZWUtNDIxYy1hNWU4LWE5OTFhYjY0ZTYyOS5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUxMjA3JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MTIwN1QxOTU2NDFaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT1mYmNmYzBlODFlNjc3OTQyNjJkM2M2NTA5ZjNiOTllMDM3NTZjN2JmN2I1NzE2NTQ3ZDEzZWY0ODE4MTg2MjYwJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.9AxpSUfA3AxJM_1cdSxCR9uNH1hx-JCz1nV9nAp-OCM)
 ### Introduction
 
 A 2D Range Tree is a balanced data structure used to efficiently answer orthogonal range queries (queries of the form: find all points within a rectangular region in 2D space).

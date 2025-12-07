@@ -19,7 +19,7 @@ A **linear** data structure organizes elements in a sequential line, where each 
 
 A **non-linear** data structure organizes elements in a hierarchical or networked way, where an item can be connected to multiple other items, creating branches.
 
-Of course. Here is a detailed overview of the data structures you've listed for your M.Tech CSE coursework. This guide covers the core concepts, trade-offs, and typical use cases for each.
+ This guide covers the core concepts, trade-offs, and typical use cases for each.
 
 ### **Trees**
 
@@ -152,7 +152,7 @@ An **AVL Tree** is a self-balancing Binary Search Tree (BST). Its primary advant
 The core mechanism is the **Balance Factor**. For every node, the height of its left and right subtrees can differ by at most 1.
 
 - **Balance Factor = height(left subtree) - height(right subtree)**
-- A valid Balance Factor must be **1, 0, or 1**. If it becomes **2 or +2**, the tree is unbalanced and must be rebalanced using **rotations**.
+- A valid Balance Factor must be **1, 0, or -1**. If it becomes **2 or +2**, the tree is unbalanced and must be rebalanced using **rotations**.
 
 ### Search Operation
 
@@ -776,6 +776,18 @@ Here's a simple breakdown of the distinctions:
     - B-Trees are "short and wide." By storing many keys in a single node (which corresponds to a disk block), they drastically reduce the number of slow disk reads needed to find data. This is their main advantage. 🌳
 
 In short, while they share the concept of ordering keys to enable efficient searching, a B-Tree's ability to have many children per node makes it a fundamentally different and more complex structure designed specifically for storage systems.
+
+### Properties of B-Trees
+For a B-Tree of minimum degree `(t = 2)`
+
+```
+Maximum number of keys per node = 2t − 1
+Min keys per node = t − 1
+Max children per node = 2t
+Min children per node (except root) = t
+```
+
+
 
 ### Applications of B-Trees
 
