@@ -610,7 +610,9 @@ A k-D tree is a binary tree that recursively partitions k-dimensional space by s
 - Nearest neighbour searches
 - Point location queries
 
-![](https://i.ibb.co/4gDj2H74/image.png)
+<!-- ![backup image url](https://i.ibb.co/4gDj2H74/image.png) -->
+![github img url](https://private-user-images.githubusercontent.com/124666305/523502938-aa9e1978-a0d3-47a0-9031-ea86ee3f6515.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NjUxMzk5MzAsIm5iZiI6MTc2NTEzOTYzMCwicGF0aCI6Ii8xMjQ2NjYzMDUvNTIzNTAyOTM4LWFhOWUxOTc4LWEwZDMtNDdhMC05MDMxLWVhODZlZTNmNjUxNS5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUxMjA3JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MTIwN1QyMDMzNTBaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT1hNWZhNWRjYjQ0NzJhYmY4YTQwMjA0MzM1NTI2MWY1MGYwMTAxZGU1NWY2OTk4ZTE5MmZjOTdiMjdhNzgzMmNiJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.hAiyPw67hMZoWAhzecgDr_Y7f-utnx89uyZjDHmBO3A)
+
 
 ![](https://i.ibb.co/Nn71yJ32/image.png)
 
@@ -1063,6 +1065,8 @@ but in word case: O(n*n)
 
 see left to right
 
-![image.png](https://i.ibb.co/35xYPtc4/image.png)
+<!-- ![backup image url](https://i.ibb.co/35xYPtc4/image.png) -->
+
+![github img url](https://private-user-images.githubusercontent.com/124666305/523503841-03607125-bb5f-4287-89ea-3c57ad48453b.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NjUxNDA2NzEsIm5iZiI6MTc2NTE0MDM3MSwicGF0aCI6Ii8xMjQ2NjYzMDUvNTIzNTAzODQxLTAzNjA3MTI1LWJiNWYtNDI4Ny04OWVhLTNjNTdhZDQ4NDUzYi5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUxMjA3JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MTIwN1QyMDQ2MTFaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT05MWI3N2UzYzRkNGI4YTdmOWVhZjE1NGUwYjU2NjdmOGRmZTJjYTA5YjRmYzExN2RjYjE1YjZlZTBlYThkYmJiJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.UtbJWbfruE2ixOeFm7z1k3NRtFnL2ZC_wCQk3nEMkso)
 
 ---
