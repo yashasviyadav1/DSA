@@ -1,10 +1,7 @@
 # MT-CSE-18-13(iii): Introduction to Intelligent Systems
 
 Full syllabus:- 
-<!-- ![backup image](https://i.ibb.co/XZpJ36v5/image.png) -->
-
-![github url](https://github-production-user-asset-6210df.s3.amazonaws.com/124666305/524207868-7317c155-aca1-4ddf-89c2-f6bc3a3cf411.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20251209%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20251209T100110Z&X-Amz-Expires=300&X-Amz-Signature=00d08c7f57306a8911b7d0e2bcb9fbb588a9a6951cb0d0129f893f9426b9a23b&X-Amz-SignedHeaders=host)
-
+![backup image](https://i.ibb.co/XZpJ36v5/image.png)
 
 ### **Overview of all Units**
 
