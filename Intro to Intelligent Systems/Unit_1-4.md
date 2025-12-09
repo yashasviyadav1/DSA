@@ -1,7 +1,9 @@
 # MT-CSE-18-13(iii): Introduction to Intelligent Systems
 
 Full syllabus:- 
-![](https://i.ibb.co/XZpJ36v5/image.png)
+<!-- ![backup image](https://i.ibb.co/XZpJ36v5/image.png) -->
+
+![github url](https://github-production-user-asset-6210df.s3.amazonaws.com/124666305/524207868-7317c155-aca1-4ddf-89c2-f6bc3a3cf411.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20251209%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20251209T100110Z&X-Amz-Expires=300&X-Amz-Signature=00d08c7f57306a8911b7d0e2bcb9fbb588a9a6951cb0d0129f893f9426b9a23b&X-Amz-SignedHeaders=host)
 
 
 ### **Overview of all Units**
@@ -97,6 +99,31 @@ It happens in two steps:
     - **Input 2:** Are friends going out? (Weight: Medium importance)
     - **Activation:** If the weighted sum of "Exam Pressure" is higher than the "FOMO" (Fear Of Missing Out), the neuron fires "Study."
 
+
+**Activation function:**
+
+Activation Function is simply the **mathematical formula** that takes that weighted sum and calculates the final output.
+that if (Z > 0.5) output 1 is example of activation formula
+
+- The function looks at the weighted sum and checks: **"Is this number big enough to matter?"**
+- **If YES (Important):** It keeps the number big (or makes it 1). The neuron "fires" and shouts the message to the next layer.
+- **If NO (Not Important):** It turns the volume down to 0 (or a very small number). The neuron stays silent.
+
+**Example:** If you are trying to recognize a **cat**, the neurons looking for "whiskers" should scream "YES!" (send signal). The neurons looking for "wheels" should be silent (ignore/output 0).
+
+> "It decides if the signal is important enough to pass on, thereby introducing **non-linearity** to the network."
+>
+
+**ReLU - Rectified Linear Unit**
+
+Modern networks use a function called ReLU (Rectified Linear Unit), which acts like a dimmer switch that can turn off completely but has no upper limit.
+
+Rule: If the sum is negative, output 0. If the sum is positive, output the number itself.
+
+Meaning: "If the signal is weak/negative, kill it completely (switch OFF). If it's positive, let it through exactly as is."
+
+---
+
 Example:
 The "Intelligence" in these systems comes from the **Weights**.
 
@@ -160,6 +187,8 @@ $Error = \frac{1}{2}(Y_{target} - Y_{pred})^2$
 
 To understand Backprop, you must mention **Gradient Descent.**
 
+Gradient Descent is an iterative optimization algorithm used to minimize a Cost Function. It works by calculating the gradient (slope) of the error surface and updating the model parameters (weights) in the opposite direction to reach the Global Minima.
+
 Imagine you are standing on top of a mountain (High Error) blindfolded, and you want to get to the bottom of the valley (Zero Error).
 
 - You feel the slope of the ground under your feet (The Gradient).
@@ -168,11 +197,27 @@ Imagine you are standing on top of a mountain (High Error) blindfolded, and you 
     - **Global Minima:** The absolute lowest point (The perfect model).
     - **Local Minima:** A small valley where you might get stuck thinking it's the bottom, but there is a deeper valley nearby.
 
+
+**<u>The Analogy vs. Technical Reality</u>**
+
+| **The Analogy (Mountain)** | **The Technical Term (Neural Network)** |
+| --- | --- |
+| **The Mountain** | The **Loss Function** (or Cost Function). This represents all possible errors. |
+| **Your Height** | The **Error** (High altitude = High Error, Low altitude = Low Error). |
+| **Blindfolded Person** | The **Algorithm** (It can't see the whole map; it only knows where it is right now). |
+| **Feeling the Slope** | Calculating the **Gradient** (Derivative). This tells you which direction is "down." |
+| **Taking a Step** | Updating the **Weights**. |
+| **Size of the Step** | The **Learning Rate** (Big steps are faster but risky; small steps are safer but slower). |
+
 ---
 
 These are two specialized types of Neural Networks designed to solve specific problems that the standard Back-Propagation network struggles with.
 
 ### Radial Basis Function Networks (RBFN)
+
+A radial basis function (RBF) is a special type of mathematical function where the function's output depends solely on the distance from a fixed central point [1]
+
+(describes something spreading out from a center, like rays, or relates to the forearm's radius bone)
 
 While standard neural networks use lines and planes to separate data (like slicing a cake), RBFNs use **circles and spheres**.
 
@@ -329,7 +374,9 @@ Standard networks (and RBFNs) are **Feed-Forward**. Data moves in one direction:
 
 If you show a Feed-Forward network a movie, it doesn't know that "Frame 2" is related to "Frame1." **RNNs are designed to remember.**
 
-![](https://i.ibb.co/CD11n5S/image.png)
+<!-- ![alternatve img url](https://i.ibb.co/CD11n5S/image.png) -->
+
+![github url](https://private-user-images.githubusercontent.com/124666305/524393110-7a870c74-5c93-428c-8a7a-5c9efc5b388a.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NjUyOTczODcsIm5iZiI6MTc2NTI5NzA4NywicGF0aCI6Ii8xMjQ2NjYzMDUvNTI0MzkzMTEwLTdhODcwYzc0LTVjOTMtNDI4Yy04YTdhLTVjOWVmYzViMzg4YS5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUxMjA5JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MTIwOVQxNjE4MDdaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT1jYTU1MmIxMGUyZjg1OGE3Y2RlOWUzYzI2ODUyNDE3MWVhOWE1OGE0MTYxNzJmYTdhMjUwNjhkODBhNzA3NmNlJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.vRTsNxxUoYDxsIBZX_aEl2XUcddWHMxPLPIpGg6q5oE)
 
 **1. The Core Concept: Loops**
 
@@ -367,6 +414,25 @@ t₁: "I"           t₂: "love"        t₃: "AI"
 > Key Insight: It's the SAME Cell!, Important: The "unfolded" diagram shows the same RNN cell multiple times, not different cells!
 > 
 
+**Confusion between hidden state $h$ and result $y$**
+
+> Note: y₁ ≠ h₁, y₂ ≠ h₂, y₃ ≠ h₃ because $y_1$ means result from current state and $h_1$ means hidden state that we will pass on to next state.
+> 
+
+Lets say we recieved $h_0$ hidden state (memory of past events) from the previous state of neural network and $x_0$ is our new input we get in current state.
+
+So we calculate: new hidden state (which will be passed to next state) from the previous hidden state $h_0$ and current input $h_0$ :
+
+$h₁ = f(x₁, h₀)$
+
+and our output of current state $y_1$ is calculated from $h_1$ :
+
+$y₁ = g(h₁)$
+
+*Therefore we can say that $y_1$ is not exactly equal to $h_1$, it is rather it is calculated using $h1$ that is $y_1$ is a function of h1*
+
+So the final order is this:  `h₁ (from previous) + x₂ (current input) → h₂ → y₂`
+
 **3. The Problem: Vanishing Gradient**
 
 A common question regarding RNNs is their limitation.
@@ -374,6 +440,29 @@ A common question regarding RNNs is their limitation.
 - When you use Back-Propagation on a long sequence (Back-Propagation Through Time), the error signals get smaller and smaller until they vanish.
 - This means basic RNNs have trouble remembering things from a long time ago (e.g., the start of a long paragraph). *Note: This led to the invention of [**LSTMs**](https://www.geeksforgeeks.org/deep-learning/deep-learning-introduction-to-long-short-term-memory/), though LSTMs are not explicitly named in this unit's list.*
 - This problem is called Vanishing Gradient
+
+**Short Intro to Long Short Memory mode (LSM)**
+
+Long Short-Term Memory (LSTM) is an enhanced version of the [**Recurrent Neural Network (RNN)**](https://www.geeksforgeeks.org/machine-learning/introduction-to-recurrent-neural-network/)
+
+LSTMs can capture long-term dependencies in sequential data making them ideal for tasks like language translation, speech recognition and time series forecasting, Music generation. Unlike traditional RNNs which use a single hidden state passed through time LSTMs introduce a memory cell that holds information over extended periods addressing the challenge of learning long-term dependencies.
+
+<!-- ![alternative url](https://i.ibb.co/hxZHg1sr/image.png) -->
+![github url img](https://private-user-images.githubusercontent.com/124666305/524419340-0863df95-6e48-4f14-a660-3b7fa0780432.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NjUzMDA1NjcsIm5iZiI6MTc2NTMwMDI2NywicGF0aCI6Ii8xMjQ2NjYzMDUvNTI0NDE5MzQwLTA4NjNkZjk1LTZlNDgtNGYxNC1hNjYwLTNiN2ZhMDc4MDQzMi5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUxMjA5JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MTIwOVQxNzExMDdaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT04NGQ3NzY0ZjQwZTIyODdhNWJhODMyN2IyMTBhOThjZjNiYTZmZGRiZjAxY2EzOTQ5ZTM0M2NkZGE5NGFhOGM5JlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.Edx8Ew5tLHbmH9HOKqc5RsScV2SmiE3ODYGsbVGRGHc)
+
+
+<!-- ![alternative url](https://i.ibb.co/Y43pwCvb/image.png) -->
+![github url](https://private-user-images.githubusercontent.com/124666305/524419514-a8f2773c-be59-4775-9b3f-c014dbd46932.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NjUzMDA1NjcsIm5iZiI6MTc2NTMwMDI2NywicGF0aCI6Ii8xMjQ2NjYzMDUvNTI0NDE5NTE0LWE4ZjI3NzNjLWJlNTktNDc3NS05YjNmLWMwMTRkYmQ0NjkzMi5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUxMjA5JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MTIwOVQxNzExMDdaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT1lOTFlMzA0OGY0MzE3OWQ3NmJmOGNiOWY4OTQ1NWY1ZjgzMWIzMDhiZGIxNDAxNGY5MDk0NjJhMTM3Y2Q0NTFmJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.72XdtOld6eWVcPyfynSe9KexMDbY7OH8Lq35UopO8hY)
+
+
+It mainly has 3 things at each state:
+
+- $x$ : input of current state
+- $h_{i-1}$ : working memory or short memory from previous step
+- $C$ : Long-term memory from previous step
+
+*So this long term memory is passed to current state in a memory unit attached. and this way the model never forgets the main points from the past, whereas keeping the previous steps memory (short memory)*
+
 
 ---
 
@@ -585,7 +674,11 @@ Individual 6: 20/140  = 14%  (small slice)
 
 ### **The Wheel:**
 
-![](https://i.ibb.co/N6HKtzL5/image.png)
+<!-- ![alt url](https://i.ibb.co/N6HKtzL5/image.png) -->
+
+![img](https://private-user-images.githubusercontent.com/124666305/524453250-bdf8ed29-ed4b-4831-9531-93988349abd5.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NjUzMDQ1NDUsIm5iZiI6MTc2NTMwNDI0NSwicGF0aCI6Ii8xMjQ2NjYzMDUvNTI0NDUzMjUwLWJkZjhlZDI5LWVkNGItNDgzMS05NTMxLTkzOTg4MzQ5YWJkNS5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUxMjA5JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MTIwOVQxODE3MjVaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT0yOGJiOTYxMTY3NTg4MWZkOTQ2NGVhOTZiYmVmNjhhOThhMGNiZjUyOTMyNTg5NTg5NWIyOGY0Y2ZlOTAwN2NkJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.XpjUGURSy0edEp0nsvwS3EN7-8kbHacI-LnxtgyUx_A)
+
+
 
 **Spin Twice to Select 2 Parents:**
 
@@ -677,6 +770,8 @@ Stays: "HEFPO"
 **Create Full Generation 2**
 
 We selected 2 parents and made 2 children. Repeat this process 2 more times to get 6 individuals:
+
+Note: <i>1 Generation = One complete cycle of the entire population</i>
 
 ---
 
