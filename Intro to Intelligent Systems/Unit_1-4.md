@@ -1,7 +1,7 @@
 # MT-CSE-18-13(iii): Introduction to Intelligent Systems
 
 Full syllabus:- 
-![backup image](https://i.ibb.co/XZpJ36v5/image.png)
+![backup image](https://i.ibb.co/BK7ydn1S/syllabus.webp)
 
 ### **Overview of all Units**
 
