@@ -845,6 +845,29 @@ Stores all nodes
 
 ![](https://i.ibb.co/pv496Htd/Screenshot-2025-11-27-at-3-08-57-PM.png)
 
+**Time Complexity:** $O(b^d)$ or $O(n^m)$
+
+**why is Time complexity of BFS : $O(b^d)$ in context of intelligent systems?**
+
+In a standard algorithms class, we search a **fixed graph** (like a map of 5 cities). We visit every city once.
+- **Formula:** $O(V + E)$
+- **Why:** You visit every **V**ertex and cross every **E**dge exactly once. It is **Linear**.
+
+In Intelligent Systems (AI), we often search through **theoretical trees** (like moves in a chess game) rather than a fixed map. The tree could be effectively infinite.
+
+**Formula:** $O(b^d)$ (often written as your image $O(n^m)$)
+
+- **$n$ (or $b$):** The **Branching Factor** (How many new options/children does each node have?)
+- **$m$ (or $d$):** The **Depth** of the solution (How many steps away is the goal?).
+
+Why it is Exponential ($n^m$):
+
+- Level 1: 1 node
+- Level 2: $n$ nodes
+- Level 3: $n \times n$ nodes ($n^2$)
+- Level $m$: $n^m$ nodes.
+- Because the number of nodes explodes as you go deeper, the time complexity is **Exponential**.
+
 ---
 
 ### **2. Depth-First Search (DFS)**
@@ -892,6 +915,11 @@ First, search only depth 0
 Then, search depth 0 and 1
 Then, search depth 0, 1, and 2
 Keep increasing until you find the goal
+
+**time complexity**: **$O(n^m)$**.
+
+<i>This might seem surprising because IDS repeats the same work multiple times (it restarts from the top every time it increases the depth limit). However, mathematically, it falls into the same complexity class as BFS and DFS.</i>
+
 
 **CONCRETE EXAMPLE for IDS : Finding a City H starting from A**
 
@@ -1098,6 +1126,9 @@ here
 
 1. **Ridge:** A ***narrow peak*** where any single step (North, South, East, West) goes down, even though the ridge itself goes up ***diagonally***.
 
+> <i>A Ridge is a special type of **Local Maximum**. It occurs when the area is higher than the surrounding neighbors (in the available search directions like N, S, E, W), but the terrain actually slopes upward in a direction the algorithm cannot directly traverse (like a diagonal)</i>
+>
+
 ```java
 Goal (higher, further along ridge)
           *
@@ -1122,7 +1153,7 @@ Y    0   1   2   3   4
    ├───┼───┼───┼───┼───┤
 1  │ 2 │ 4 │ 3 │ 2 │ 1 │
    ├───┼───┼───┼───┼───┤
-2  │ 1 │ 3 │ ***5*** │ 4 │ 2 │  ← Ridge runs diagonally!
+2  │ 1 │ 3 │ 5 │ 4 │ 2 │  ← Ridge runs diagonally!
    ├───┼───┼───┼───┼───┤
 3  │ 1 │ 2 │ 4 │ 6 │ 3 │  ← 5 → 6 = uphill along diagonal
    ├───┼───┼───┼───┼───┤
@@ -1194,7 +1225,7 @@ This uses a proper search tree (like BFS), but with a priority system.
 Goal: Find path from A to Z
 
 ```java
-				A (start)
+		A (start)
        / \
       B   D
       |   |
@@ -1286,6 +1317,9 @@ Disadvantages:
     - Best-First Search + path cost consideration
 
 ---
+
+> An algorithm is **Complete** if it is **guaranteed to find a solution** when one exists.An algorithm is **Optimal** if it is guaranteed to find the **best solution** (the one with the lowest cost or shortest path) among all possible solutions.
+>
 
 ### Best-First Search vs Hill Climbing: A Comparision
 
@@ -1407,49 +1441,46 @@ b. Calculate ΔE = (neighbor_value - current_value)
 
 Problem: Visit 4 cities and return to start with minimum distance
 
-```java
-Cities: A, B, C, D
+**Corrected Example**
 
-Initial route: A → B → C → D → A (distance = 100)
-Execution: 
-Temperature = 100 (High)
+Cities: `A, B, C, D`
+Initial: `A → B → C → D → A` (Distance = 100)
+****
 
-**Iteration 1:**
-Current: A→B→C→D→A (100)
-Try: A→C→B→D→A (110) ← Worse by 10
-ΔE = 100 - 110 = -10
-P = e^(-10/100) = e^(-0.1) ≈ 0.90 (90% chance)
-Random: 0.75 < 0.90 → Accept worse move!
+**Iteration 1 (T=100)**
 
-Temperature = 50 (Medium)
+- **Current:** `A → B → C → D → A` (100 cost of reaching end)
+- **Try (Swap B-C):** `A → C → B → D → A` (110) ← Worse
+- **Calculation:** $\Delta E = 110 - 100 = 10$ (Cost Increase)
+- **Prob:** $P = e^{-10/100} = e^{-0.1} \approx 0.90$
+- **Random:** $0.75 < 0.90$ → **ACCEPT**
 
-**Iteration 2:**
-Current: A→C→B→D→A (110)
-Try: A→D→B→C→A (120) ← Worse by 10
-ΔE = 110 - 120 = -10
-P = e^(-10/50) = e^(-0.2) ≈ 0.82 (82% chance)
-Random: 0.88 > 0.82 → Reject
+**Iteration 2 (T=50)**
 
-Temperature = 10 (Low)
+**Current:** `A → C → B → D → A` (110)
 
-**Iteration 3:**
-Current: A→C→B→D→A (110)
-Try: A→B→D→C→A (95) ← Better by 15
-ΔE = 110 - 95 = 15 (positive)
-Always accept better moves!
+- **Try (Swap C-D):** `A → D → B → C → A` (120) ← Worse
+- **Calculation:** $\Delta E = 120 - 110 = 10$
+- **Prob:** $P = e^{-10/50} = e^{-0.2} \approx 0.82$
+- **Random:** $0.88 > 0.82$ → **REJECT** (Stay at 110)
 
-Temperature = 1 (Very Low)
+**Iteration 3 (T=10)**
 
-**Iteration 4:**
+- **Current:** `A → C → B → D → A` (110)
+- **Try (Swap B-D):** `A → C → D → B → A` (**Let's assume this is 95**) ← Better
+- **Logic:** $95 < 110$ (Better).
+- **Action:** **ALWAYS ACCEPT** better moves.
 
-Current: A→B→D→C→A (95)
-Try: A→D→C→B→A (105) ← Worse by 10
-ΔE = 95 - 105 = -10
-P = e^(-10/1) = e^(-10) ≈ 0.00005 (0.005% chance)
-Random: 0.5 > 0.00005 → Reject (almost no bad moves accepted)
+**Iteration 4 (T=1)**
 
-**Final Solution: A→B→D→C→A (distance = 95)**
-```
+- **Current:** `A → C → D → B → A` (95)
+- **Try (Swap C-D):** `A → D → C → B → A` (105) ← Worse
+- **Calculation:** $\Delta E = 105 - 95 = 10$
+- **Prob:** $P = e^{-10/1} = e^{-10} \approx 0.000045$
+- **Random:** $0.5 > 0.000045$ → **REJECT**
+
+**Final Solution**
+**Route:** `A → C → D → B → A` (Distance = 95)
 
 **Comparison: Hill Climbing vs Simulated Annealing**
 
@@ -1683,7 +1714,7 @@ Propositional logic is too weak because it can't handle variables. It can say "S
 
 Predicate Logic fixes this by adding:
 
-- **Predicates:** $Man(x)$ means "$x$ is a man."
+- **Predicates:** $Man(x)$ means $x$ is a man.
 - **Quantifiers:**
     - $\forall$ (**For All**): $\forall x (Man(x) \rightarrow Mortal(x))$ ("For all $x$, if $x$ is a man, then $x$ is mortal.")
     - $\exists$ (**There Exists**): $\exists x (Bird(x) \wedge CannotFly(x))$ ("There exists some bird that cannot fly.")
@@ -1691,10 +1722,38 @@ Predicate Logic fixes this by adding:
 ### **3. Inference (How the AI thinks)**
 
 Inference is the process of deriving new facts from old ones.
+It's how AI systems "reason" - taking what they know and figuring out what else must be true.
 
-- **Modus Ponens:** The golden rule of AI logic.
-    - Rule: If $P \rightarrow Q$ is true, and $P$ is true..
-    - Inference: ...then $Q$ **must** be true.
+Key Inference Rules:
+
+1. **Modus Ponens** (The Golden Rule)
+- **Rule:** If P→Q is true, and P is true...
+- **Inference:** ...then Q must be true.
+- **Example:**
+    - If it rains (P) → the ground is wet (Q)
+    - It is raining (P is true)
+    - **Therefore:** The ground is wet (Q must be true)
+2. **Modus Tollens** (Reasoning Backwards)
+- **Rule:** If P→Q is true, and Q is false...
+- **Inference:** ...then P must be false.
+- **Example:**
+    - If it rains (P) → the ground is wet (Q)
+    - The ground is NOT wet (Q is false)
+    - **Therefore:** It did NOT rain (P must be false)
+3. **Resolution** (Used in automated theorem proving)
+- **Rule:** Combine two clauses that have opposite literals to derive a new clause.
+- **Example:**
+    - Clause 1: P ∨ Q ("P or Q")
+    - Clause 2: ¬P ∨ R ("not P or R")
+    - **Resolution:** Q ∨ R ("Q or R")
+    - This eliminates P and finds what else must be true.
+
+**Why Inference Matters for AI:**
+
+- **Knowledge Base:** AI stores facts (e.g., "All birds have wings," "Tweety is a bird")
+- **Query:** User asks "Does Tweety have wings?"
+- **Inference Engine:** Uses rules like Modus Ponens to deduce the answer
+- **Result:** "Yes, Tweety has wings" (derived, not explicitly stored)
 
 ---
 
