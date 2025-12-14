@@ -602,7 +602,7 @@ Horizontal fragmentation divides a relation into **tuples (rows)** based on **pr
 
 Vertical fragmentation divides a relation by **columns (attributes)**, ensuring that each fragment contains the **primary key** to enable reconstruction.
 
-> a natural liking for and understanding of someone or something.
+> Affinity means: a natural liking for and understanding of someone or something.
 > 
 
 **a. Affinity Analysis**
@@ -698,13 +698,13 @@ Each fragment is **unique** to a single site.
 
 ---
 
-### **3.1.2 Replicated Allocation**
+**3.1.2 Replicated Allocation**
 
 Some or all fragments are stored at multiple sites.
 
 There are two types:
 
-### **a. Fully Replicated**
+**a. Fully Replicated**
 
 - Every site has **a complete copy** of the database.
 
@@ -718,7 +718,7 @@ Disadvantages:
 - Very high storage cost.
 - Updates must propagate to all copies (expensive synchronization).
 
-### b. **Partially Replicated**
+**b. Partially Replicated**
 
 - Only some fragments are replicated — **strategically** based on access frequency.
 
@@ -761,7 +761,7 @@ you lose the entire record of recent transactions = data loss. So, we replicate 
 - Each site has limited storage.
 - Ensure total size of allocated fragments ≤ site capacity.
 
-Also**:** distribute data so no single site is overloaded.
+Also: distribute data so no single site is overloaded.
 
 **4. Communication Costs**
 
@@ -841,7 +841,7 @@ Disadvantage:
 - More complex coordination and latency.
 
 ```java
-lets sat we have, N = 5 nodes
+lets say we have, N = 5 nodes
 
 acc to majority consensus approach we (R + W > N) must satisfy
 
@@ -1315,7 +1315,7 @@ SELECT * FROM EMP_MUMBAI
 
 **View Management Challenges**
 
-1. View Materialization
+**1.View Materialization**
 
 There are **two strategies** for implementing views:
 
@@ -1418,7 +1418,7 @@ Once authenticated, the DBMS decides **what you are allowed to do**.
 
 In distributed databases, access control can apply at **three levels** 
 
-- **(a) Global Level Authorization**
+**(a) Global Level Authorization**
 
 You define access rights for the entire distributed schema.
 
@@ -1432,7 +1432,7 @@ Meaning:
 
 Use Case: System admin, auditor, etc.
 
-- **(b) Fragment-Level Authorization**
+**(b) Fragment-Level Authorization**
 
 You restrict access to *specific sites or fragments*.
 
