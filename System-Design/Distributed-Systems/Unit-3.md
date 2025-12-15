@@ -45,7 +45,7 @@ Let’s unpack the **three major goals** with **M.Tech-level clarity and example
     
 - Formula:Total Cost=CPU Cost+I/O Cost+Communication Cost+Storage Cost
     
-    Total Cost=CPU Cost+I/O Cost+Communication Cost+Storage Cost\text{Total Cost} = \text{CPU Cost} + \text{I/O Cost} + \text{Communication Cost} + \text{Storage Cost}
+    $Total Cost=CPU Cost+I/O Cost+Communication Cost+Storage Cost$
     
 - Example:
     
@@ -1635,43 +1635,44 @@ This algorithm is based on a simple "divide and conquer" idea: joining two sorte
 
 Example Walkthrough:
 1. Sort Phase:
-    ◦ `Students` sorted by `MajorID`:
-        ▪ `(1, 'Alice', 10)`
-        ▪ `(3, 'Charlie', 10)`
-        ▪ `(2, 'Bob', 20)`
-    ◦ `Majors` sorted by `MajorID` (it's already sorted):
-        ▪ `(10, 'CS')`
-        ▪ `(20, 'Physics')`
-        ▪ `(30, 'Math')`
+- `Students` sorted by `MajorID`:
+    - `(1, 'Alice', 10)`
+    - `(3, 'Charlie', 10)`
+    - `(2, 'Bob', 20)`
+    - `Majors` sorted by `MajorID` (it's already sorted):
+        - `(10, 'CS')`
+        - `(20, 'Physics')`
+        - `(30, 'Math')`
 2. Merge Phase:
-    ◦ Ptr_S (Students) → `(1, 'Alice', 10)`
-    ◦ Ptr_M (Majors) ->`(10, 'CS')`
-    ◦ `10 == 10`? Yes. Result: `('Alice', 'CS')`. Advance Ptr_S. (To handle duplicates, you'd advance Ptr_S but *not* Ptr_M yet).
-    ◦ Ptr_S ->`(3, 'Charlie', 10)`
-    ◦ Ptr_M ->`(10, 'CS')`
-    ◦ `10 == 10`? Yes. Result: `('Charlie', 'CS')`. Advance Ptr_S.
-    ◦ Ptr_S ->`(2, 'Bob', 20)`
-    ◦ Ptr_M ->`(10, 'CS')`
-    ◦ `20 > 10`? Yes. `Ptr_M` is too small. Advance Ptr_M.
-    ◦ Ptr_S ->`(2, 'Bob', 20)`
-    ◦ Ptr_M ->`(20, 'Physics')`
-    ◦ `20 == 20`? Yes. Result: `('Bob', 'Physics')`. Advance Ptr_S.
-    ◦ Ptr_S ->(End of table). Stop.
-• When it's good**:** Excellent for large tables, especially if they are *already sorted* (e.g., from an index scan), which lets it skip the expensive sort phase. It's also one of the few joins that works efficiently on non-equality conditions (like `>` or `<`).
+    - Ptr_S (Students) → `(1, 'Alice', 10)`
+    - Ptr_M (Majors) ->`(10, 'CS')`
+    - `10 == 10`? Yes. Result: `('Alice', 'CS')`. Advance Ptr_S. (To handle duplicates, you'd advance Ptr_S but *not* Ptr_M yet).
+    - Ptr_S ->`(3, 'Charlie', 10)`
+    - Ptr_M ->`(10, 'CS')`
+    - `10 == 10`? Yes. Result: `('Charlie', 'CS')`. Advance Ptr_S.
+    - Ptr_S ->`(2, 'Bob', 20)`
+    - Ptr_M ->`(10, 'CS')`
+    - `20 > 10`? Yes. `Ptr_M` is too small. Advance Ptr_M.
+    - Ptr_S ->`(2, 'Bob', 20)`
+    -  Ptr_M ->`(20, 'Physics')`
+    -  `20 == 20`? Yes. Result: `('Bob', 'Physics')`. Advance Ptr_S.
+    -  Ptr_S ->(End of table). Stop.
+
+• When it's good:  Excellent for large tables, especially if they are *already sorted* (e.g., from an index scan), which lets it skip the expensive sort phase. It's also one of the few joins that works efficiently on non-equality conditions (like `>` or `<`).
 
 **4. Hash Join (HJ)**
 
 This is typically the fastest algorithm for equality joins when you have enough memory.
-    1. Build Phase: Scan the *smaller* table (`Majors`) and build a hash table (or "hash map") in memory, using the join key (`MajorID`) as the hash key.
-    2. Probe Phase: Scan the *larger* table (`Students`) one row at a time. For each row, hash its join key (`MajorID`) and "probe" (look up) that key in the hash table. If a match is found, return the result.
+    - Build Phase: Scan the *smaller* table (`Majors`) and build a hash table (or "hash map") in memory, using the join key (`MajorID`) as the hash key.
+    - Probe Phase: Scan the *larger* table (`Students`) one row at a time. For each row, hash its join key (`MajorID`) and "probe" (look up) that key in the hash table. If a match is found, return the result.
 
 Example Walkthrough:
 1. Build Phase (on smaller table, `Majors`):
-    ◦ Create a hash table in memory.
-    ◦ Read `(10, 'CS')`. Hash `10`. Store: `(10) \rightarrow ('CS')`
-    ◦ Read `(20, 'Physics')`. Hash `20`. Store: `(20) \rightarrow ('Physics')`
-    ◦ Read `(30, 'Math')`. Hash `30`. Store: `(30) \rightarrow ('Math')`
-    ◦ In-Memory Hash Table:
+    - Create a hash table in memory.
+    - Read `(10, 'CS')`. Hash `10`. Store: `(10) -> ('CS')`
+    - Read `(20, 'Physics')`. Hash `20`. Store: `(20) -> ('Physics')`
+    - Read `(30, 'Math')`. Hash `30`. Store: `(30) -> ('Math')`
+    - In-Memory Hash Table:
 
 ```sql
 | Key | Value |
@@ -1682,12 +1683,12 @@ Example Walkthrough:
 ```
 
 2. Probe Phase (on larger table, Students):
-    ◦ Read (1, 'Alice', 10). Hash 10. Look up 10 in the hash table.
-    ◦ Found! ('CS'). Result: ('Alice', 'CS').
-    ◦ Read (2, 'Bob', 20). Hash 20. Look up 20.
-    ◦ Found! ('Physics'). Result: ('Bob', 'Physics').
-    ◦ Read (3, 'Charlie', 10). Hash 10. Look up 10.
-    ◦ Found! ('CS'). Result: ('Charlie', 'CS').
+    - Read (1, 'Alice', 10). Hash 10. Look up 10 in the hash table.
+    - Found! ('CS'). Result: ('Alice', 'CS').
+    - Read (2, 'Bob', 20). Hash 20. Look up 20.
+    - Found! ('Physics'). Result: ('Bob', 'Physics').
+    - Read (3, 'Charlie', 10). Hash 10. Look up 10.
+    - Found! ('CS'). Result: ('Charlie', 'CS').
 • When it's good: The "go-to" join for large datasets *if* the join is on equality (=) and the *entire* hash table for the smaller table can fit in available RAM.
 
 ## Distributed Query Optimization
