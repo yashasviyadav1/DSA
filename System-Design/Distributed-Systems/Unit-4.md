@@ -36,7 +36,6 @@ T2: Read(A)           *-- Reads value*
 T2: A = A * 1.1       *-- Increase by 10%*
 T2: Write(A)
 T2: Read(B)
-T2: Read(B)
 T2: B = B * 1.1       
 T2: Write(B)
 
@@ -85,6 +84,7 @@ When we say a database supports **transactions**, it means it ensures these four
 **Atomicity**
 - A transaction is treated as a single, indivisible unit of work. Either all of its operations are executed successfully, or none are executed at all.
 - "All or nothing" ideology
+
 **Consistency**
 - A transaction must take the database from one valid (consistent) state to another valid state.
 - The integrity constraints defined on the data (like balances ≥ 0, totals must match, etc.) should always hold true.- Example: Total money remains constant
@@ -93,6 +93,7 @@ When we say a database supports **transactions**, it means it ensures these four
 
 - Even if multiple transactions run concurrently, each should behave as if it were the only one running.
 - Their intermediate steps should not be visible to others.
+
 **Durability**
 
 Once a transaction **commits**, its changes are **permanent**, even if:
@@ -267,7 +268,13 @@ Let's look at the classic example that shows this difference.
 
 Consider this schedule **S** with three transactions (T1, T2, T3) and one data item, **A**.
 • `T2`'s write is a **blind write**; it writes to `A` without ever reading it.
-• `T3`'s write is also a **blind write**.**TimeTransaction T1Transaction T2Transaction T3**1`Read(A)`2`Write(A)`3`Write(A)`4`Write(A)`
+• `T3`'s write is also a **blind write**.
+**TimeTransaction T1Transaction T2Transaction T3**
+- `T1: Read(A)`
+- `T2: Write(A)`
+- `T1: Write(A)`
+- `T3: Write(A)`
+
 The schedule of operations is: `S: R1(A); W2(A); W1(A); W3(A);`
 
 **Analysis Step 1: Is it Conflict Serializable?**
