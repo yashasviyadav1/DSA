@@ -1607,21 +1607,21 @@ This is an optimization of the Nested Loop Join, designed to reduce a major bott
 Example Walkthrough:
 
 1. Read a **block** of `Students` into memory. Let's say the block size is 2.
-    ◦ In-Memory Block: `[(1, 'Alice', 10), (2, 'Bob', 20)]`
+    - In-Memory Block: `[(1, 'Alice', 10), (2, 'Bob', 20)]`
 2. Scan the `Majors` table.
-    ◦ Get `(10, 'CS')`. Compare it against the *whole block* in memory.
-        ▪ `10 == 10` (Match `Alice`). **Result:** `('Alice', 'CS')`.
-        ▪ `10 == 20` (No match `Bob`).
-    ◦ Get `(20, 'Physics')`. Compare it against the *whole block* in memory.
-        ▪ `20 == 10` (No match `Alice`).
-        ▪ `20 == 20` (Match `Bob`). **Result:** `('Bob', 'Physics')`.
-    ◦ Get `(30, 'Math')`. (No matches in the block).
+    - Get `(10, 'CS')`. Compare it against the *whole block* in memory.
+        - `10 == 10` (Match `Alice`). **Result:** `('Alice', 'CS')`.
+        - `10 == 20` (No match `Bob`).
+    - Get `(20, 'Physics')`. Compare it against the *whole block* in memory.
+        - `20 == 10` (No match `Alice`).
+        - `20 == 20` (Match `Bob`). **Result:** `('Bob', 'Physics')`.
+    - Get `(30, 'Math')`. (No matches in the block).
 3. Read the next block of `Students` into memory.
-    ◦ In-Memory Block: `[(3, 'Charlie', 10)]`
+    - In-Memory Block: `[(3, 'Charlie', 10)]`
 4. Scan the `Majors` table *again from the beginning*.
-    ◦ Get `(10, 'CS')`. Compare it against the block.
-        ▪ `10 == 10` (Match `Charlie`). **Result:** `('Charlie', 'CS')`.
-    ◦ ...and so on.
+    - Get `(10, 'CS')`. Compare it against the block.
+        - `10 == 10` (Match `Charlie`). **Result:** `('Charlie', 'CS')`.
+    - ...and so on.
 • When it's good**:** This is better than NLJ when tables are large and not indexed, as it drastically reduces disk I/O.
 
 **3. Sort-Merge Join (SMJ)**
