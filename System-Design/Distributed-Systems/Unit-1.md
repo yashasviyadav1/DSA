@@ -235,7 +235,7 @@ The History department maintains full control over its own database but has agre
 
 ---
 
-### c) Loosely Integrated / Federated (High Autonomy)
+### c) Loosely Integrated / Federated / Multi Data Base System [MDBS] (High Autonomy)
 
 This is a bottom-up approach where pre-existing, fully independent databases are brought together to cooperate. The emphasis is on preserving local independence at all costs.
 
