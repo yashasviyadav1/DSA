@@ -2,6 +2,8 @@ from collections import deque
 
 ### Implementing AVL Tree in python
 
+### how to identify weather LL LR RR RL case in rotation ? Explained:  https://i.ibb.co/jk11Fb4G/image.png
+
 class Node:
     def __init__(self, data):
         self.data = data

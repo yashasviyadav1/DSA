@@ -188,6 +188,12 @@ Deletion is also a two-phase process and is the most complex operation.
 - **Strategy:** BST delete followed by potential rotations on the path back to the root.
 - **Time Complexity:** **O(log n)**. The initial find-and-delete is O(log n), and the rebalancing path is also O(log n).
 
+### Rotations Explained with Diagram:- 
+![alt text](https://i.ibb.co/jk11Fb4G/image.png)
+[Alternatite link](https://beeimg.com/images/o28545873734.png)
+
+[Alternatite link](https://i.postimg.cc/W1wwmn2v/AVL-rotations.png)
+
 ### Dry Run Examples
 
 ### **Insertion Example: Insert `2`**
