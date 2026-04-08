@@ -12,7 +12,7 @@ Index for this page :
 ---
 
 # Trees
-
+Asyclic Connected Graph
 Trees are non-linear data structures that represent hierarchical data. The structures you listed are primarily used for efficient searching, insertion, and deletion operations, often improving upon the limitations of simpler structures like arrays or linked lists.
 
 A **linear** data structure organizes elements in a sequential line, where each item has at most one element before it and one after it.
