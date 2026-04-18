@@ -5,6 +5,8 @@ Imagine a city's water supply system. You have a main water treatment plant (the
 
 Every pipe has a strict physical limit on how much water it can carry per second. If you randomly blast water through the network, you might accidentally fill up a wide pipe that leads to a narrow bottleneck, causing a jam and wasting the potential of other empty pipes. The Ford-Fulkerson method is a mathematical approach to perfectly route the water to ensure the absolute maximum volume reaches the destination without exceeding any pipe's limits.
 
+**A residual graph (Gₙ)** in network flow is a directed graph that indicates additional possible flow, showing remaining capacity on forward edges (cₑ − fₑ) and potential to undo flow on backward edges (fₑ). It has the same vertices as the original graph and allows algorithms like Ford-Fulkerson to find augmenting paths. Flow is maximal when no s–t path exists in the residual graph.
+
 ## 2. Requirement (The Goal)
 The objective is to find the **Absolute Maximum Flow**. You must calculate the highest possible total volume of flow that can be pushed from the Source (S) to the Sink (T) simultaneously, under the given network constraints.
 
