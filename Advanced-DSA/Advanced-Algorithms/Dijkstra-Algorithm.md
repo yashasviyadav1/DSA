@@ -12,7 +12,7 @@ Dijkstra’s Algorithm is just a greedy algorithm. It is the exact logic your br
 
 **Time & Space:**
 
-Time: O(E * logV) - for each edge we are inserting a vertex into minHeap of V nodes (1 insertion takes logV)
+Time: O((V + E) log V) - traversing the graph, and inserting vertex into minHeap of V nodes (1 insertion takes logV)
 Space: O(V+E) for storing, minHeap, distance array
 
 
@@ -30,6 +30,8 @@ def dijkstra(adjList, src):
 
 	# initialize it with src--->src distance as 0
 	# and remaining all nodes distance from src is infinity because we have not explored them
+
+	#stores the (minDistFromSrcToNodeX, X)
 	minHeap = [] # using list, then will use heapq module to use list as minHeap, by defaul minHeap sorts based on each nodes 1st element
 	heapq.heappush(minHeap, (0, src)) # tuple = (distance, nodeno.)
 	while len(minHeap) > 0:
