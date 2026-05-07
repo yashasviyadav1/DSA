@@ -4,7 +4,7 @@
 The Floyd-Warshall algorithm is an All-Pairs Shortest Path (APSP) algorithm.
 While algorithms like Dijkstra's or Bellman-Ford find the shortest path from a single starting node to all other nodes, Floyd-Warshall finds the shortest path between every possible pair of nodes in a graph simultaneously.
 
-The Intuition: Finding ShortcutsImagine you want to travel from city $A$ to city $B$. You have a direct flight that costs $500.
+The Intuition: Finding Shortcuts, Imagine you want to travel from city $A$ to city $B$. You have a direct flight that costs $500.
 However, you notice that if you fly from $A$ to an intermediate city $K$ (costing $100$), and then from $K$ to $B$ (costing $200$), 
 your total cost is $300$. 
 By routing through an intermediate node $K$, you found a "shortcut" that is cheaper than the direct route.
@@ -13,17 +13,17 @@ The algorithm simply takes this idea to the extreme: it systematically checks ev
 
 **Working: The Dynamic Programming Idea**
 Floyd-Warshall is a classic Dynamic Programming (DP) algorithm. It builds the solution bottom-up.
-1. **State Definition:** Let dist[i][j] be the shortest distance from node i to node j.
+1. **State Definition:** Let `dist[i][j]` be the shortest distance from `node i to node j`.
 2. **Initial State (k = 0):** We start with the direct edges given by the graph's adjacency matrix. If there is no direct edge between i and j, the distance is infinity (\infty). The distance from a node to itself is 0.
-3. **The Transition (The Core Logic):** We introduce a new variable, k, which represents the **intermediate node**. For every pair of nodes (i, j), we ask:
-*Is it faster to go directly from i to j, or to go from i to k, and then from k to j?*
-Mathematically, this is expressed as:dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])
+3. **The Transition (The Core Logic):** We introduce a new variable, k, which represents the **intermediate node**. For every pair of nodes `(i, j)`, we ask:
+*Is it faster to go directly from `i to j`, or to go from `i to k`, and then from `k to j`?*
+Mathematically, this is expressed as: `dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])`
 
 
 
 **Handling Negative Edges & Cycles**
 - Negative Edges: Floyd-Warshall handles negative edge weights perfectly. Because it explores all possible paths systematically via the DP table, it naturally calculates the correct cost even if an edge drops the total weight.
-- Negative Cycles: A negative cycle is a loop in the graph where the sum of the edges is less than zero. If you keep going around this loop, your distance approaches -infinity .
+- Negative Cycles: A negative cycle is a loop in the graph where the sum of the edges is less than zero. If you keep going around this loop, your distance approaches `-infinity` .
 - Detection: Floyd-Warshall detects these effortlessly. Before the algorithm starts, the distance from a node to itself, $dist[i][i]$, is set to $0$. After the algorithm finishes, if any diagonal element $dist[i][i]$ is less than zero, it guarantees that node $i$ is part of a negative weight cycle.
 
 
@@ -72,6 +72,7 @@ def floydWarshallShortestDist(edges, V):
 		for i in range(0, V):
 
 			# OPTIMIZATION: from i If we can't reach the intermediate node k , then we can't find a smaller distance for i-->j from i-->k + k --> j coz we can't reach k so no need to check j at all
+			# or we can say there is no direct edge from i to k, so means we can't reach j via k, so skip this
 			if distanceMatrix[i][k] == math.inf:
 				continue
 

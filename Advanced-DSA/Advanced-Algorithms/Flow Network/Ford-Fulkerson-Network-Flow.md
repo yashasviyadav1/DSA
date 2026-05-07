@@ -5,7 +5,7 @@ Imagine a city's water supply system. You have a main water treatment plant (the
 
 Every pipe has a strict physical limit on how much water it can carry per second. If you randomly blast water through the network, you might accidentally fill up a wide pipe that leads to a narrow bottleneck, causing a jam and wasting the potential of other empty pipes. The Ford-Fulkerson method is a mathematical approach to perfectly route the water to ensure the absolute maximum volume reaches the destination without exceeding any pipe's limits.
 
-**A residual graph (Gₙ)** in network flow is a directed graph that indicates additional possible flow, showing remaining capacity on forward edges (cₑ − fₑ) and potential to undo flow on backward edges (fₑ). It has the same vertices as the original graph and allows algorithms like Ford-Fulkerson to find augmenting paths. Flow is maximal when no s–t path exists in the residual graph.
+**A residual graph (Gₙ)** in network flow is a directed graph that indicates additional possible flow, showing remaining capacity on forward edges (cₑ − fₑ) and potential to undo flow on backward edges (fₑ). It has the same vertices as the original graph and allows algorithms like Ford-Fulkerson to find augmenting paths. Flow is maximal when no `s–t` path exists in the residual graph.
 
 ## 2. Requirement (The Goal)
 The objective is to find the **Absolute Maximum Flow**. You must calculate the highest possible total volume of flow that can be pushed from the Source (S) to the Sink (T) simultaneously, under the given network constraints.
@@ -124,6 +124,26 @@ We still have 3 units of capacity left at S->B, and 1 unit left at A->T. But how
 Final Residual Graph:
 
 
+### Time Complexity & Space
+For the Ford–Fulkerson Method (Maximum Flow in Flow Networks):
+
+Time Complexity
+$O(E⋅f)$
+
+where:
+E = number of edges
+
+f = maximum flow value
+
+
+**Space Complexity of Ford–Fulkerson Method**
+
+$O(V+E)$
+
+where:
+
+V = number of vertices
+E = number of edges
 
 ### 5. Termination
 Looking at the residual graph, there are no more valid paths from S to T. S->A is at 0. S->B has 2, but from B, the path B->T is at 0, and the path B->A->T is blocked because A->T is at 0.
