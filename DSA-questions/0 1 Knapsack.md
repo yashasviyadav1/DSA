@@ -154,8 +154,7 @@ public class Solution{
 
     static int knapsack(int[] weight, int[] value, int n, int knapsackWeightLimit) {
 
-        int index = n-1, totalWeightPicked = 0; 
-
+        int index = n-1;
         // dp[index][remainingWeightLimit]   
         // remainning weight limit can be from 0 to knapsackWeightLimit     
         int[][] dp = new int[n][knapsackWeightLimit + 1]; // +1 coz if limit is 10 then totalweightpicked can be 10 as well
@@ -198,7 +197,7 @@ public class Solution{
 
     static int knapsack(int[] weight, int[] value, int n, int knapsackWeightLimit) {
 
-        int index = n-1, totalWeightPicked = 0; ;
+        int index = n-1;
          
         return solve(weight, value, index, knapsackWeightLimit); // this would return the max total value picked by robber in his knapsack
 
